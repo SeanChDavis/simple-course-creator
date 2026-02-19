@@ -59,8 +59,7 @@ class SCC_Post_Listing {
 		$options = get_option( 'course_display_settings', $default_options );
 		$options = wp_parse_args( $options, $default_options );
 
-		// only display the post listing on WordPress posts
-		if ( 'post' !== $post->post_type || ! is_main_query() ) {
+		if ( ! is_single() ) {
 			return $content;
 		}
 
