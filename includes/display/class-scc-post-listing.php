@@ -59,7 +59,7 @@ class SCC_Post_Listing {
 		$options = get_option( 'course_display_settings', $default_options );
 		$options = wp_parse_args( $options, $default_options );
 
-		if ( ! is_single() ) {
+		if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
 			return $content;
 		}
 
