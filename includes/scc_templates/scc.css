@@ -7,8 +7,8 @@
 #scc-wrap {
 	position: relative;
 	padding: 1em 0 1.4em;
-	border-width: 2px 0;
-	border-style: dotted;
+	border-width: 0 0 1px;
+	border-style: solid;
 	border-color: rgba(0,0,0,.1);
 	margin-bottom: 1.5em;
 }
@@ -35,10 +35,6 @@
 }
 #scc-wrap li:last-child {
 	padding-bottom: 0;
-}
-#scc-wrap .scc-list-item {
-}
-#scc-wrap a {
 }
 #scc-wrap h3 {
 	margin-top: 0;
