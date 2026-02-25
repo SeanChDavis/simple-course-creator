@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Simple Course Creator
- * Plugin URI: https://github.com/SDavisMedia/simple-course-creator
- * Description: Allows you to easily create and manage courses in your WordPress website.
+ * Plugin URI: https://crispydiv.com/
+ * Description: Allows you to easily create and manage courses on your WordPress website.
  * Version: 1.0.7
  * Author: Sean Davis
- * Author URI: https://github.com/SDavisMedia/
+ * Author URI: https://seanchdavis.com
  * License: GPL2
  * Requires at least: 3.8
  * Tested up to: 5.3
@@ -26,18 +26,20 @@
  *
  * The basic foundation of this plugin was highly influenced by Mike
  * Jolley's WP Post Series plugin. Special thanks to him. Check out
- * his website - http://mikejolley.com -
+ * his website - http://mikejolley.com
  *
  * @package Simple Course Creator
  * @category Core
  * @author Sean Davis
  * @license GNU GENERAL PUBLIC LICENSE Version 2 - /license.txt
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // no accessing this file directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // no accessing this file directly
 
 
 /**
- * primary class for Simple Course Creator
+ * Primary class for Simple Course Creator
  *
  * @since 1.0.0
  */
@@ -45,7 +47,7 @@ class Simple_Course_Creator {
 
 
 	/**
-	 * constructor for Simple_Course_Creator class
+	 * Constructor for Simple_Course_Creator class
 	 *
 	 * Set up the basic plugin environment and with definitions,
 	 * plugin information, and required plugin files.
@@ -76,17 +78,17 @@ class Simple_Course_Creator {
 
 
 	/**
-	 * load SCC textdomain
+	 * Load SCC textdomain
 	 */
-	public function load_textdomain() {
+	public function load_textdomain(): void {
 		load_plugin_textdomain( 'scc', false, SCC_DIR . 'languages/' );
 	}
 
 
 	/**
-	 * enqueue *back-end* scripts and styles
+	 * Enqueue *back-end* scripts and styles
 	 */
-	public function admin_assets() {
+	public function admin_assets(): void {
 
 		// admin page CSS
 		wp_register_style( 'scc_admin_style', SCC_URL . 'assets/css/admin-style.css' );
@@ -101,10 +103,17 @@ class Simple_Course_Creator {
 	/**
 	 * require additional plugin files
 	 */
-	private function includes() {
-		require_once( SCC_DIR . 'includes/admin/class-scc-settings-page.php' );		// main settings page
-		require_once( SCC_DIR . 'includes/admin/class-scc-custom-taxonomy.php' );	// setup course taxonomy
-		require_once( SCC_DIR . 'includes/display/class-scc-post-listing.php' );	// display post listing
+	private function includes(): void {
+
+		// main settings page
+		require_once( SCC_DIR . 'includes/admin/class-scc-settings-page.php' );
+
+		// setup course taxonomy
+		require_once( SCC_DIR . 'includes/admin/class-scc-custom-taxonomy.php' );
+
+		// display post listing
+		require_once( SCC_DIR . 'includes/display/class-scc-post-listing.php' );
 	}
 }
+
 new Simple_Course_Creator();

@@ -4,6 +4,11 @@
  */
 global $post;
 
+$course = false;
+if ( isset( $args['course'] ) ) {
+	$course = $args['course'];
+}
+
 // get/set the option values
 $default_options = array(
 	'display_position' => 'above',
@@ -35,8 +40,8 @@ foreach ( $the_posts as $post_id ) {
 	if ( $post_id == $post->ID ) break;	$posts ++;
 }
 
-$array              = get_option( 'taxonomy_' . $course->term_id );
-$post_list_title    = $array['post_list_title'];
+$term_meta			= get_option( 'taxonomy_' . $course->term_id );
+$post_list_title    = ! empty( $term_meta['post_list_title'] ) ? $term_meta['post_list_title'] : $course->name;
 $course_description = term_description( $course->term_id, 'course' );
 $list_container     = $options['list_type'] == 'ordered' ? 'ol' : 'ul';
 $no_list            = $options['list_type'] == 'none' ? 'style="list-style: none;"' : '';
@@ -58,14 +63,14 @@ switch ( $options['current_post'] ) {
 /**
  * To override...
  *
- * OPTION ONE
+ * OPTION 1
  *
  * Create a folder called "scc_templates" in the root of your theme
  * and COPY this file into it. It will override the default plugin template.
  *
- * OPTION TWO
+ * OPTION 2
  *
- * Notice the placement of multiple do_action() functions. It may be easier
+ * Notice the placement of multiple do_action() functions. It may be easier to
  * hook into this template rather than override it. If you'd like to do so,
  * use the following PHP in your own theme functions file.
  *

@@ -108,7 +108,7 @@ class SCC_Post_Listing {
 		if ( $args && is_array($args) ) {
 			extract( $args );
 		}
-		include( $this->locate_template( $template_name, $template_path, $default_path ) );
+		include( $this->locate_template( $template_name, $template_path, $default_path, $args['course']->slug ) );
 	}
 
 
@@ -117,7 +117,7 @@ class SCC_Post_Listing {
 	 *
 	 * @used_by get_template()
 	 */
-	public function locate_template( $template_name, $template_path = '', $default_path = '' ) {
+	public function locate_template( $template_name, $template_path = '', $default_path = '', $slug = '' ) {
 		if ( ! $template_path ) {
 			$template_path = 'scc_templates';
 		}
@@ -130,7 +130,10 @@ class SCC_Post_Listing {
 			array(
 				trailingslashit( $template_path ) . $template_name,
 				$template_name
-			)
+			),
+			true,
+			false,
+			$slug
 		);
 
 		// Get default template
