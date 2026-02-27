@@ -29,6 +29,9 @@ class SCC_Custom_Taxonomy {
 		// load new taxonomy
 		add_action( 'init', array( $this, 'register_taxonomy_course' ) );
 
+		// filter the course archive page
+		add_action( 'pre_get_posts', array( $this, 'course_archive' ) );
+
 		// add custom meta fields to new term
 		add_action( 'course_add_form_fields', array( $this, 'course_meta_title' ), 10, 2 );
 		add_action( 'course_edit_form_fields', array( $this, 'edit_course_meta_title' ), 10, 2 );
@@ -78,6 +81,27 @@ class SCC_Custom_Taxonomy {
 			//TODO: build custom select menu so only one course can be selected
 		);
 		register_taxonomy( 'course', array( 'post' ), $args );
+	}
+
+
+	/**
+	 * Filter the course archive page
+	 *
+	 * The query should use the settings for the post listing rather than the default
+	 * settings for the blog. This method modifies the query for the course archive page.
+	 */
+	public function course_archive( $query ) {
+
+		if ( $query->is_archive && ! is_admin() ) {
+			$queried_object = get_queried_object();
+			if ( $queried_object && isset( $queried_object->taxonomy ) && 'course' === $queried_object->taxonomy ) {
+				$options = get_option( 'course_display_settings' );
+				$query->set( 'posts_per_page', -1 );
+				$query->set( 'orderby', $options['scc_orderby'] ?? 'date' );
+				$query->set( 'order', $options['scc_order'] ?? 'asc' );
+			}
+		}
+		return $query;
 	}
 
 

@@ -6,11 +6,11 @@
 /* default post listing styles */
 #scc-wrap {
 	position: relative;
-	padding: 1em 0 1.4em;
-	border-width: 0 0 1px;
-	border-style: solid;
-	border-color: rgba(0,0,0,.1);
-	margin-bottom: 1.5em;
+	padding: 1.4rem;
+	border: 1px solid rgba(0,0,0,.1);
+}
+#scc-wrap:not(:last-child) {
+	margin-bottom: 1.5rem;
 }
 #scc-wrap .scc-post-container {
 	display: none;
@@ -41,10 +41,11 @@
 }
 #scc-wrap .scc-toggle-post-list {
 	position: absolute;
-		right: 0;
-		bottom: 10px;
+	right: 10px;
+	bottom: 10px;
 	font-size: 10px;
 	font-weight: bold;
+	line-height: 1;
 	text-transform: uppercase;
 	border: none;
 }
