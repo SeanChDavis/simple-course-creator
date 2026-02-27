@@ -18,11 +18,11 @@ Once activated, a new taxonomy is added to your Posts menu called "Courses." Cou
 
 When creating a new course, it's important to give the course a description as well as a title, which is a new field added by this plugin.
 
-![Create New Course](http://seandavis.co/wp-content/uploads/2014/02/Screen-Shot-2014-02-24-at-2.44.16-PM.png)
+![Create New Course](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-2.png)
 
-Now with at least one course created, you have the ability to select which course a post belongs to from the edit post screen.
+Now with at least one course created, you can select which course a post belongs to from the edit post screen.
 
-![Select Course](http://seandavis.co/wp-content/uploads/2014/02/Screen-Shot-2014-02-24-at-2.47.48-PM.png)
+![Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-3.png)
 
 Once a course is selected and saved, a course listing will appear in the content of said post as long as it's not the only post in a course.
 
@@ -31,9 +31,9 @@ The course listing will display as a container that shows nothing but the course
 The series of posts will be hidden until you click a subtle link for displaying them, at which point the container
  will gracefully expand to reveal all posts in said course. They will all be linked except for the current post.
 
-![Course Collapsed](http://buildwpyourself.com/wp-content/uploads/2014/03/course-collapsed.png)
+![Course Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-5.png)
 
-![Course Expanded](http://buildwpyourself.com/wp-content/uploads/2014/03/course-expanded.png)
+![Course Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-6.png)
 
 Styles are kept to a minimum so theme styles are inherited as much as possible.
 
@@ -58,7 +58,7 @@ Simple Course Creator comes with very simple options.
   6. Disable plugin javascript, which causes the post listing to be fully expended on page load. The show/hide
    function is removed. 
 
-![Simple Course Creator Settings](http://buildwpyourself.com/wp-content/uploads/2014/03/scc-settings.png)
+![Simple Course Creator Settings](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-1.png)
 
 Expect more options in the future.
 
@@ -129,12 +129,4 @@ If you notice any mistakes, feel free to fork the repo and submit a pull request
 ### License
 ---
 
-This plugin, like WordPress, is licensed under the GPL. Do what you want with it. I seriously don't care. 
-
-### Developer
----
-
-I'm Sean. I've created a few little pieces of software. I'm not that easy to find online. That's by design.
-
-Is this plugin useful to you? If so, please consider buying me a bag of coffee beans. Thank you much. [Donate via
- PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=52HQDSEUA542S)
+This plugin, like WordPress, is licensed under the GPL. Do what you want with it. I seriously don't care.
