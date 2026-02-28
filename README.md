@@ -1,12 +1,14 @@
 Simple Course Creator
 =====================
 
-View it on WordPress: (http://wordpress.org/plugins/simple-course-creator/)
+https://scc.crispydiv.com
 
-Simple Course Creator is designed to easily link posts together in a series and output that series list in the content of each included post.
+Simple Course Creator is a WordPress plugin designed to link posts together in a series and output that series list in the content of each included post.
+
+#### How to Download & Install in WordPress
+https://scc.crispydiv.com/how-to-download-from-github/
 
 #### Add-ons
-
 * [Simple Course Creator Customizer](https://github.com/seanchdavis/simple-course-creator-customizer)
 * [Simple Course Creator Post Meta](https://github.com/seanchdavis/simple-course-creator-post-meta)
 * [Simple Course Creator Front Display](https://github.com/seanchdavis/simple-course-creator-front-display)
@@ -71,18 +73,18 @@ The simplest way to edit your course output is with hooks and filters in your ac
 
 Here's a list of all the hook names:
 
-* scc_before_container
-* scc_container_top
-* scc_below_title
-* scc_below_description
-* scc_before_toggle
-* scc_after_toggle
-* scc_above_list
-* scc_before_list_item
-* scc_after_list_item
-* scc_below_list
-* scc_container_bottom
-* scc_after_container
+* `scc_before_container`
+* `scc_container_top`
+* `scc_below_title`
+* `scc_below_description`
+* `scc_before_toggle`
+* `scc_after_toggle`
+* `scc_above_list`
+* `scc_before_list_item`
+* `scc_after_list_item`
+* `scc_below_list`
+* `scc_container_bottom`
+* `scc_after_container`
 
 To use any of these hooks, create your own custom function and use WordPress' `add_action()` function to call your function with the specific hook location. Here's an example.
 
