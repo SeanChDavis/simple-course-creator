@@ -1,9 +1,8 @@
 === Simple Course Creator ===
 Contributors: sdavis2702
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=52HQDSEUA542S
 Tags: series, course, lesson, taxonomy, sdavis2702
 Requires at least: 3.8
-Tested up to: 5.3
+Tested up to: 6.9.1
 Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,14 +17,9 @@ Output can be displayed above the post content, below, or both. There's also an 
 
 Extend the functionality of Simple Course Creator with these add-on plugins:
 
-* [SCC Customizer](https://wordpress.org/plugins/simple-course-creator-customizer/) - Customizer the SCC output using the native WordPress customizer.
-* [SCC Post Meta](https://wordpress.org/plugins/simple-course-creator-post-meta/) - Add author and published date to SCC post listing items.
-* [SCC Front Display](https://wordpress.org/plugins/simple-course-creator-front-display/) - Indicate a post’s course on the blog home, archive pages, and search results.
-* [SCC Updates](https://wordpress.org/plugins/simple-course-creator-updates/) - List the newest posts from your courses and stories in a timeline format anywhere on your site (shortcode).
-
-Follow Simple Course Creator’s development on [Github](https://github.com/sdavismedia/simple-course-creator)
-
-View all [contributors](https://github.com/sdavismedia/simple-course-creator/graphs/contributors) to SCC’s development.
+* [SCC Customizer](https://github.com/seanchdavis/simple-course-creator-customizer/) - Customizer the SCC output using the native WordPress customizer.
+* [SCC Post Meta](https://github.com/seanchdavis/simple-course-creator-post-meta/) - Add author and published date to SCC post listing items.
+* [SCC Front Display](https://github.com/seanchdavis/simple-course-creator-front-display/) - Indicate a post’s course on the blog home, archive pages, and search results.
 
 == Installation ==
 

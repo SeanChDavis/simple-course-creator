@@ -20,29 +20,30 @@ Once activated, a new taxonomy is added to your Posts menu called "Courses." Cou
 
 When creating a new course, it's important to give the course a description as well as a title, which is a new field added by this plugin.
 
-![Create New Course](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-2.png)
+![Create New Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-1-Course-Creation.png)
 
-Now with at least one course created, you can select which course a post belongs to from the edit post screen.
+Courses can also be created while editing a post, just like creating a new category or tag. You can also select an existing course from the post editor and save it.
 
-![Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-3.png)
+![Edit -post - Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-3-Post-Edit-w-Course-scaled.png)
+![All posts - Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-2-All-Posts-by-Course-scaled.png)
 
-Once a course is selected and saved, a course listing will appear in the content of said post as long as it's not the only post in a course.
+Once a course is selected and saved, a course listing will appear in the content of the as long as it's not the only post in a course.
 
-The course listing will display as a container that shows nothing but the course title and the course description, which is what you filled out when creating a new course.
+The course listing will display as a container that shows the course title and the course description if they exist. (Make sure they exist by editing the course details under `WP Dashboard -> Posts -> Courses`.)
 
 The series of posts will be hidden until you click a subtle link for displaying them, at which point the container
- will gracefully expand to reveal all posts in said course. They will all be linked except for the current post.
+ will expand to reveal all posts included in the course. All posts will be linked except for the current post.
 
-![Course Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-5.png)
+![Course Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-5-Included-Post-Course-Collapsed-scaled.png)
 
-![Course Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-6.png)
+![Course Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-6-Included-Post-Course-Expanded-scaled.png)
 
-Styles are kept to a minimum so theme styles are inherited as much as possible.
+Styles are kept to a minimum. Theme styles are inherited as much as possible.
 
 ### Simple Course Creator Settings
 ---
 
-Simple Course Creator comes with very simple options.
+Simple Course Creator comes with simple options.
 
 1. Choose to display your course containers above post content, below post content, both above and below post content
 , or do not display it at all while still preserving the course configuration.
@@ -50,19 +51,17 @@ Simple Course Creator comes with very simple options.
 2. Choose your course list style type. They can be displayed as a numbered list, a bulleted list, or a list with no list
  indicator at all... simply stacked like paragraphs.
  
- 3. Choose to sort your posts by date, author, title, last modified, random, or comment count.
+3. Choose to sort your posts by date, author, title, last modified, random, or comment count.
  
- 4. Choose to display your sorted posts in ascending order or descending order.
+4. Choose to display your sorted posts in ascending order or descending order.
  
- 5. Choose a display style of the current post in your post listing. Select between bold, strike, italic, or no style
+5. Choose a display style of the current post in your post listing. Select between bold, strike, italic, or no style
   at all.
   
-  6. Disable plugin javascript, which causes the post listing to be fully expended on page load. The show/hide
+6. Disable plugin javascript, which causes the post listing to be fully expended on page load. The show/hide
    function is removed. 
 
-![Simple Course Creator Settings](https://scc.crispydiv.com/wp-content/uploads/2026/02/screenshot-1.png)
-
-Expect more options in the future.
+![Simple Course Creator Settings](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-4-Course-Display-Settings.png)
 
 ### Theme Overrides
 ---
