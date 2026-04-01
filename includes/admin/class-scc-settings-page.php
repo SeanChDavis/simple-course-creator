@@ -1,484 +1,491 @@
 <?php
 /**
- * Settings page class
+ * SCC_Settings_Page class
  *
- * This class creates the settings menu item as well as the settings
- * page. The menu item is added to WP Dashboard -> Settings -> Course
- * Settings.
+ * Creates the Course Settings submenu page under Settings. Registers
+ * all plugin settings across three sections: Course Container Display,
+ * Post Meta, and Front Display.
  *
  * @since 1.0.0
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-} // no accessing this file directly
+}
 
 
 class SCC_Settings_Page {
 
 
 	/**
-	 * Constructor for SCC_Settings_Page class
+	 * Constructor — register hooks.
 	 */
 	public function __construct() {
-
-		// load settings page
 		add_action( 'admin_menu', array( $this, 'settings_menu' ) );
-
-		// register settings
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
 
 	/**
-	 * Add a new settings page under the Settings menu
+	 * Register the Course Settings submenu page under Settings.
 	 */
 	public function settings_menu(): void {
 		add_options_page(
-				SCC_NAME,
-				__( 'Course Settings', 'scc' ),
-				'manage_options',
-				'simple_course_creator',
-				array( $this, 'settings_page' )
+			SCC_NAME,
+			__( 'Course Settings', 'scc' ),
+			'manage_options',
+			'simple_course_creator',
+			array( $this, 'settings_page' )
 		);
 	}
 
 
 	/**
-	 * Register display settings
+	 * Register all settings, sections, and fields.
 	 */
 	public function register_settings(): void {
 
-		// register display settings
 		register_setting(
-				'course_display_settings',
-				'course_display_settings',
-				array( $this, 'save_settings' )
+			'course_display_settings',
+			'course_display_settings',
+			array( $this, 'save_settings' )
 		);
 
-		// add display settings section
+		// -------------------------------------------------------------------------
+		// Section: Course Container Display
+		// -------------------------------------------------------------------------
+
 		add_settings_section(
-				'course_display_settings',
-				__( 'Course Container Display Settings', 'scc' ),
-				array( $this, 'course_display_settings' ),
-				'simple_course_creator'
+			'course_display_settings',
+			__( 'Course Container Display', 'scc' ),
+			array( $this, 'section_course_display' ),
+			'simple_course_creator'
 		);
 
-		// add option for choosing the display position of the course
 		add_settings_field(
-				'display_position',
-				__( 'Course Container Position', 'scc' ),
-				array( $this, 'course_list_position' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'display_position' )
+			'display_position',
+			__( 'Container Position', 'scc' ),
+			array( $this, 'field_display_position' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'display_position' )
 		);
 
-		// add option for choosing the list style (ul, ol, none)
 		add_settings_field(
-				'list_type',
-				__( 'HTML List Style', 'scc' ),
-				array( $this, 'course_list_type' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'list_type' )
+			'list_type',
+			__( 'List Style', 'scc' ),
+			array( $this, 'field_list_type' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'list_type' )
 		);
 
-		// add option for ordering posts
 		add_settings_field(
-				'scc_orderby',
-				__( 'Sort Posts By', 'scc' ),
-				array( $this, 'course_orderby' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'scc_orderby' )
+			'scc_orderby',
+			__( 'Sort Posts By', 'scc' ),
+			array( $this, 'field_orderby' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'scc_orderby' )
 		);
 
-		// add option for ordering posts ASC or DESC
 		add_settings_field(
-				'scc_order',
-				__( 'Order Posts', 'scc' ),
-				array( $this, 'course_order' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'scc_order' )
+			'scc_order',
+			__( 'Sort Order', 'scc' ),
+			array( $this, 'field_order' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'scc_order' )
 		);
 
-		// add option for choosing current post text/font properties
 		add_settings_field(
-				'current_post',
-				__( 'Current Post Style', 'scc' ),
-				array( $this, 'course_current_post' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'current_post' )
+			'current_post',
+			__( 'Current Post Style', 'scc' ),
+			array( $this, 'field_current_post' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'current_post' )
 		);
 
-		// add option for disabling JS
 		add_settings_field(
-				'disable_js',
-				__( 'Disable JavaScript', 'scc' ),
-				array( $this, 'course_disable_js' ),
-				'simple_course_creator',
-				'course_display_settings',
-				array( 'label_for' => 'disable_js' )
+			'disable_js',
+			__( 'Disable JavaScript', 'scc' ),
+			array( $this, 'field_disable_js' ),
+			'simple_course_creator',
+			'course_display_settings',
+			array( 'label_for' => 'disable_js' )
+		);
+
+		// -------------------------------------------------------------------------
+		// Section: Post Meta
+		// -------------------------------------------------------------------------
+
+		add_settings_section(
+			'scc_post_meta_settings',
+			__( 'Post Meta', 'scc' ),
+			array( $this, 'section_post_meta' ),
+			'simple_course_creator'
+		);
+
+		add_settings_field(
+			'show_author',
+			__( 'Show Author', 'scc' ),
+			array( $this, 'field_show_author' ),
+			'simple_course_creator',
+			'scc_post_meta_settings',
+			array( 'label_for' => 'show_author' )
+		);
+
+		add_settings_field(
+			'show_date',
+			__( 'Show Date', 'scc' ),
+			array( $this, 'field_show_date' ),
+			'simple_course_creator',
+			'scc_post_meta_settings',
+			array( 'label_for' => 'show_date' )
+		);
+
+		// -------------------------------------------------------------------------
+		// Section: Front Display
+		// -------------------------------------------------------------------------
+
+		add_settings_section(
+			'scc_front_display_settings',
+			__( 'Front Display', 'scc' ),
+			array( $this, 'section_front_display' ),
+			'simple_course_creator'
+		);
+
+		add_settings_field(
+			'enable_front_display',
+			__( 'Enable Front Display', 'scc' ),
+			array( $this, 'field_enable_front_display' ),
+			'simple_course_creator',
+			'scc_front_display_settings',
+			array( 'label_for' => 'enable_front_display' )
 		);
 	}
 
 
+	// =============================================================================
+	// Section callbacks
+	// =============================================================================
+
 	/**
-	 * Section - Course Container Display Settings
-	 *
-	 * @callback_for 'course_display_settings' section
+	 * Section description — Course Container Display.
 	 */
-	public function course_display_settings() {
-		echo '<p>' . __( 'These settings control the front-end display of the post listing container inside of posts that are part of courses.',
-						'scc' ) . '</p>';
+	public function section_course_display(): void {
+		echo '<p>' . esc_html__( 'Control the position, style, and ordering of the course post listing inside single posts.', 'scc' ) . '</p>';
+	}
+
+	/**
+	 * Section description — Post Meta.
+	 */
+	public function section_post_meta(): void {
+		echo '<p>' . esc_html__( 'Show or hide author and date information beneath each post in the course listing.', 'scc' ) . '</p>';
+	}
+
+	/**
+	 * Section description — Front Display.
+	 */
+	public function section_front_display(): void {
+		echo '<p>' . esc_html__( 'On the blog home, archives, and search results, indicate that posts belong to a course.', 'scc' ) . '</p>';
 	}
 
 
+	// =============================================================================
+	// Field callbacks — Course Container Display
+	// =============================================================================
+
 	/**
-	 * Option - Course Container Position
-	 *
-	 * @callback_for 'display_position' field
+	 * Field — Container Position.
 	 */
-	public function course_list_position() {
+	public function field_display_position(): void {
 
-		// set default option value
-		$default = array( 'display_position' => 'above' );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 
-		// possible list options
-		$course_container = array(
-				'above' => array( 'value' => 'above', 'desc' => __( 'Above Content', 'scc' ) ),
-				'below' => array( 'value' => 'below', 'desc' => __( 'Below Content', 'scc' ) ),
-				'both'  => array( 'value' => 'both', 'desc' => __( 'Above & Below Content', 'scc' ) ),
-				'hide'  => array( 'value' => 'hide', 'desc' => __( 'Hide Course Container', 'scc' ) ),
+		$choices = array(
+			'above' => __( 'Above Content', 'scc' ),
+			'below' => __( 'Below Content', 'scc' ),
+			'both'  => __( 'Above & Below Content', 'scc' ),
+			'hide'  => __( 'Hide', 'scc' ),
 		);
 		?>
 		<select id="display_position" name="course_display_settings[display_position]">
-			<?php foreach ( $course_container as $c ) { // display options from $course_container array ?>
-				<option value="<?php echo $c['value']; ?>" <?php selected( $options['display_position'],
-						$c['value'] ); ?>><?php echo $c['desc']; ?></option>
-			<?php } ?>
+			<?php foreach ( $choices as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['display_position'], $value ); ?>>
+					<?php echo esc_html( $label ); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php _e( 'Choose where to display your course container.', 'scc' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Where to display the course container relative to post content.', 'scc' ); ?></p>
 		<?php
 	}
 
 
 	/**
-	 * Option - HTML List Style
-	 *
-	 * @callback_for 'list_type' field
+	 * Field — List Style.
 	 */
-	public function course_list_type() {
+	public function field_list_type(): void {
 
-		// set default option value
-		$default = array( 'list_type' => 'ordered' );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 
-		// possible list options
-		$list_type = array(
-				'ordered'   => array( 'value' => 'ordered', 'desc' => __( 'Numbered List', 'scc' ) ),
-				'unordered' => array( 'value' => 'unordered', 'desc' => __( 'Bullet Points', 'scc' ) ),
-				'none'      => array( 'value' => 'none', 'desc' => __( 'No List Indicator', 'scc' ) ),
+		$choices = array(
+			'ordered'   => __( 'Numbered List', 'scc' ),
+			'unordered' => __( 'Bullet Points', 'scc' ),
+			'none'      => __( 'No List Indicator', 'scc' ),
 		);
 		?>
 		<select id="list_type" name="course_display_settings[list_type]">
-			<?php foreach ( $list_type as $l ) { // display options from $list_type array ?>
-				<option value="<?php echo $l['value']; ?>" <?php selected( $options['list_type'],
-						$l['value'] ); ?>><?php echo $l['desc']; ?></option>
-			<?php } ?>
+			<?php foreach ( $choices as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['list_type'], $value ); ?>>
+					<?php echo esc_html( $label ); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php _e( 'Choose your preferred list element style.', 'scc' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Choose your preferred list element style.', 'scc' ); ?></p>
 		<?php
 	}
 
 
 	/**
-	 * Option - Sort Posts By
-	 *
-	 * @callback_for 'scc_orderby' field
+	 * Field — Sort Posts By.
 	 */
-	public function course_orderby() {
+	public function field_orderby(): void {
 
-		// set default option value
-		$default = array( 'scc_orderby' => 'date' );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 
-		// possible list options
-		$orderby = array(
-				'date'          => array( 'value' => 'date', 'desc' => __( 'Date', 'scc' ) ),
-				'author'        => array( 'value' => 'author', 'desc' => __( 'Author', 'scc' ) ),
-				'title'         => array( 'value' => 'title', 'desc' => __( 'Title', 'scc' ) ),
-				'modified'      => array( 'value' => 'modified', 'desc' => __( 'Last Modified', 'scc' ) ),
-				'random'        => array( 'value' => 'random', 'desc' => __( 'Random', 'scc' ) ),
-				'comment_count' => array( 'value' => 'comment_count', 'desc' => __( 'Comment Count', 'scc' ) ),
+		$choices = array(
+			'date'          => __( 'Date', 'scc' ),
+			'author'        => __( 'Author', 'scc' ),
+			'title'         => __( 'Title', 'scc' ),
+			'modified'      => __( 'Last Modified', 'scc' ),
+			'rand'          => __( 'Random', 'scc' ),
+			'comment_count' => __( 'Comment Count', 'scc' ),
 		);
 		?>
 		<select id="scc_orderby" name="course_display_settings[scc_orderby]">
-			<?php foreach ( $orderby as $o ) { // display options from $orderby array ?>
-				<option value="<?php echo $o['value']; ?>" <?php selected( $options['scc_orderby'],
-						$o['value'] ); ?>><?php echo $o['desc']; ?></option>
-			<?php } ?>
+			<?php foreach ( $choices as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['scc_orderby'], $value ); ?>>
+					<?php echo esc_html( $label ); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php _e( 'Choose a parameter for ordering your post listing.', 'scc' ); ?></p>
+		<p class="description"><?php esc_html_e( 'The parameter used to order posts in the course listing.', 'scc' ); ?></p>
 		<?php
 	}
 
 
 	/**
-	 * Option - Order Posts
-	 *
-	 * @callback_for 'scc_order' field
+	 * Field — Sort Order.
 	 */
-	public function course_order() {
+	public function field_order(): void {
 
-		// set default option value
-		$default = array( 'scc_order' => 'ASC' );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 
-		// possible list options
-		$order = array(
-				'asc'  => array( 'value' => 'asc', 'desc' => __( 'Ascending', 'scc' ) ),
-				'desc' => array( 'value' => 'desc', 'desc' => __( 'Descending', 'scc' ) ),
+		$choices = array(
+			'asc'  => __( 'Ascending', 'scc' ),
+			'desc' => __( 'Descending', 'scc' ),
 		);
 		?>
 		<select id="scc_order" name="course_display_settings[scc_order]">
-			<?php foreach ( $order as $o ) { // display options from $order array ?>
-				<option value="<?php echo $o['value']; ?>" <?php selected( $options['scc_order'],
-						$o['value'] ); ?>><?php echo $o['desc']; ?></option>
-			<?php } ?>
+			<?php foreach ( $choices as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['scc_order'], $value ); ?>>
+					<?php echo esc_html( $label ); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php _e( 'Choose whether your list should be in ascending or descending order.', 'scc' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Whether the post listing is sorted ascending or descending.', 'scc' ); ?></p>
 		<?php
 	}
 
 
 	/**
-	 * Option - Current Post Style
-	 *
-	 * @callback_for 'current_post' field
-	 * @since 1.0.3
+	 * Field — Current Post Style.
 	 */
-	public function course_current_post() {
+	public function field_current_post(): void {
 
-		// set default option value
-		$default = array( 'current_post' => 'none' );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 
-		// possible list options
-		$current_post = array(
-				'none'   => array( 'value' => 'none', 'desc' => __( 'No Style', 'scc' ) ),
-				'bold'   => array( 'value' => 'bold', 'desc' => __( 'Bold', 'scc' ) ),
-				'strike' => array( 'value' => 'strike', 'desc' => __( 'Strike', 'scc' ) ),
-				'italic' => array( 'value' => 'italic', 'desc' => __( 'Italic', 'scc' ) )
+		$choices = array(
+			'none'   => __( 'No Style', 'scc' ),
+			'bold'   => __( 'Bold', 'scc' ),
+			'italic' => __( 'Italic', 'scc' ),
+			'strike' => __( 'Strikethrough', 'scc' ),
 		);
 		?>
-		<select id="list_type" name="course_display_settings[current_post]">
-			<?php foreach ( $current_post as $cp ) { // display options from $current_post array ?>
-				<option value="<?php echo $cp['value']; ?>" <?php selected( $options['current_post'],
-						$cp['value'] ); ?>><?php echo $cp['desc']; ?></option>
-			<?php } ?>
+		<select id="current_post" name="course_display_settings[current_post]">
+			<?php foreach ( $choices as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['current_post'], $value ); ?>>
+					<?php echo esc_html( $label ); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php _e( 'Choose your preferred current post text/font style.', 'scc' ); ?></p>
+		<p class="description"><?php esc_html_e( 'How the currently viewed post is styled in the course listing.', 'scc' ); ?></p>
 		<?php
 	}
 
 
 	/**
-	 * Option - Disable JavaScript
-	 *
-	 * @callback_for 'disable_js' field
-	 * @since 1.0.1
+	 * Field — Disable JavaScript.
 	 */
-	public function course_disable_js() {
+	public function field_disable_js(): void {
 
-		// set default option value
-		$default = array( 'disable_js' => 0 );
-		$options = get_option( 'course_display_settings', $default );
-		$options = wp_parse_args( $options, $default );
+		$options = $this->get_options();
 		?>
-		<input id="disable_js" type="checkbox" name="course_display_settings[disable_js]" value="1" <?php echo checked( 1,
-				isset( $options['disable_js'] ) ? $options['disable_js'] : 0, false ); ?>>
-		<p class="description"><?php _e( 'The course list will display without a toggle link.',
-					'scc' ); ?></p>
+		<input id="disable_js" type="checkbox" name="course_display_settings[disable_js]" value="1" <?php checked( 1, $options['disable_js'] ); ?>>
+		<label for="disable_js"><?php esc_html_e( 'Display the course listing without a toggle link.', 'scc' ); ?></label>
+		<?php
+	}
+
+
+	// =============================================================================
+	// Field callbacks — Post Meta
+	// =============================================================================
+
+	/**
+	 * Field — Show Author.
+	 */
+	public function field_show_author(): void {
+
+		$options = $this->get_options();
+		?>
+		<input id="show_author" type="checkbox" name="course_display_settings[show_author]" value="1" <?php checked( 1, $options['show_author'] ); ?>>
+		<label for="show_author"><?php esc_html_e( 'Show the post author beneath each item in the course listing.', 'scc' ); ?></label>
 		<?php
 	}
 
 
 	/**
-	 * Save display settings
+	 * Field — Show Date.
+	 */
+	public function field_show_date(): void {
+
+		$options = $this->get_options();
+		?>
+		<input id="show_date" type="checkbox" name="course_display_settings[show_date]" value="1" <?php checked( 1, $options['show_date'] ); ?>>
+		<label for="show_date"><?php esc_html_e( 'Show the publish date beneath each item in the course listing.', 'scc' ); ?></label>
+		<?php
+	}
+
+
+	// =============================================================================
+	// Field callbacks — Front Display
+	// =============================================================================
+
+	/**
+	 * Field — Enable Front Display.
+	 */
+	public function field_enable_front_display(): void {
+
+		$options = $this->get_options();
+		?>
+		<input id="enable_front_display" type="checkbox" name="course_display_settings[enable_front_display]" value="1" <?php checked( 1, $options['enable_front_display'] ); ?>>
+		<label for="enable_front_display"><?php esc_html_e( 'Show a course label in post excerpts on the blog home, archives, and search results.', 'scc' ); ?></label>
+		<?php
+	}
+
+
+	// =============================================================================
+	// Sanitization
+	// =============================================================================
+
+	/**
+	 * Sanitize and validate all settings on save.
 	 *
-	 * @used_by course_list_position(), course_list_type(), & course_disable_js()
+	 * @param  array $input Raw input from the settings form.
+	 * @return array        Sanitized settings.
 	 */
 	public function save_settings( $input ) {
 
-		// validate the display position option
-		if ( ! isset( $input['display_position'] ) ) {
-			$input['display_position'] = 'above';
-		} else {
-			update_option( 'display_position', $input['display_position'] );
-		}
+		$clean = array();
 
-		// validate the list style option
-		if ( ! isset( $input['list_type'] ) ) {
-			$input['list_type'] = 'ordered';
-		} else {
-			update_option( 'list_type', $input['list_type'] );
-		}
+		$allowed_positions   = array( 'above', 'below', 'both', 'hide' );
+		$allowed_list_types  = array( 'ordered', 'unordered', 'none' );
+		$allowed_orderby     = array( 'date', 'author', 'title', 'modified', 'rand', 'comment_count' );
+		$allowed_orders      = array( 'asc', 'desc' );
+		$allowed_post_styles = array( 'none', 'bold', 'italic', 'strike' );
 
-		// validate the orderby option
-		if ( ! isset( $input['scc_orderby'] ) ) {
-			$input['scc_orderby'] = 'date';
-		} else {
-			update_option( 'scc_orderby', $input['scc_orderby'] );
-		}
+		$clean['display_position'] = isset( $input['display_position'] ) && in_array( $input['display_position'], $allowed_positions, true )
+			? $input['display_position']
+			: 'above';
 
-		// validate the order option
-		if ( ! isset( $input['scc_order'] ) ) {
-			$input['scc_order'] = 'ASC';
-		} else {
-			update_option( 'scc_order', $input['scc_order'] );
-		}
+		$clean['list_type'] = isset( $input['list_type'] ) && in_array( $input['list_type'], $allowed_list_types, true )
+			? $input['list_type']
+			: 'ordered';
 
-		// validate the current post style option
-		if ( ! isset( $input['current_post'] ) ) {
-			$input['current_post'] = 'none';
-		} else {
-			update_option( 'current_post', $input['current_post'] );
-		}
+		$clean['scc_orderby'] = isset( $input['scc_orderby'] ) && in_array( $input['scc_orderby'], $allowed_orderby, true )
+			? $input['scc_orderby']
+			: 'date';
 
-		// validate the disable JS option
-		$input['disable_js'] = ( isset( $input['disable_js'] ) && $input['disable_js'] == true ? '1' : '0' );
+		$clean['scc_order'] = isset( $input['scc_order'] ) && in_array( $input['scc_order'], $allowed_orders, true )
+			? $input['scc_order']
+			: 'asc';
 
-		return $input;
+		$clean['current_post'] = isset( $input['current_post'] ) && in_array( $input['current_post'], $allowed_post_styles, true )
+			? $input['current_post']
+			: 'none';
+
+		$clean['disable_js']           = ! empty( $input['disable_js'] ) ? '1' : '0';
+		$clean['show_author']          = ! empty( $input['show_author'] ) ? '1' : '0';
+		$clean['show_date']            = ! empty( $input['show_date'] ) ? '1' : '0';
+		$clean['enable_front_display'] = ! empty( $input['enable_front_display'] ) ? '1' : '0';
+
+		return $clean;
 	}
 
 
+	// =============================================================================
+	// Settings page output
+	// =============================================================================
+
 	/**
-	 * Plugin settings page
-	 *
-	 * SCC has a single menu link as a submenu under the "Settings" section
-	 * of the WordPress dashboard. Within that page are tabbed settings pages.
-	 * Based on which tab is selected, different settings or information will
-	 * be shown.
+	 * Render the settings page.
 	 */
 	public function settings_page(): void {
+
 		?>
 		<div class="wrap">
-			<h2><?php echo SCC_NAME . __( ' Settings', 'scc' ); ?></h2>
-			<?php $active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'simple_course_creator'; ?>
-			<h2 class="nav-tab-wrapper">
-				<a href="?page=simple_course_creator&tab=simple_course_creator" class="nav-tab <?php echo $active_tab == 'simple_course_creator' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Display',
-							'scc' ); ?></a>
-				<a href="?page=simple_course_creator&tab=simple_course_creator_info" class="nav-tab <?php echo $active_tab == 'simple_course_creator_info' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Information',
-							'scc' ); ?></a>
-			</h2>
+			<h1><?php echo esc_html( SCC_NAME . ' ' . __( 'Settings', 'scc' ) ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
-				if ( $active_tab == 'simple_course_creator' ) {
-					settings_fields( 'course_display_settings' );
-					do_settings_sections( 'simple_course_creator' );
-					submit_button();
-				} elseif ( $active_tab == 'simple_course_creator_info' ) {
-					?>
-					<h3><?php echo SCC_NAME . __( ' Information', 'scc' ); ?></h3>
-					<table class="form-table plugin-info">
-						<tbody>
-							<tr>
-								<th scope="row"><?php _e( 'Plugin Resources', 'scc' ); ?></th>
-								<td>
-									<p class="resources">
-										<?php
-										printf( __( 'New courses are created under the Posts menu. Once a course is created, posts can be assigned to a course through the manage posts and edit post screens. To add content to the post listing output, see the hooks & filters documentation %1$s. To completely override the output, CSS, and JS files, see the override plugin files documentation %2$s.',
-												'scc' ),
-												'<a href="https://github.com/seanchdavis/simple-course-creator#wordpress-hooks--filters" target="_blank">[?]</a>',
-												'<a href="https://github.com/seanchdavis/simple-course-creator#active-theme-file-overrides" target="_blank">[?]</a>'
-										);
-										?>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row"><?php _e( 'Plugin Contributors', 'scc' ); ?></th>
-								<td>
-									<?php echo $this->scc_contributors(); ?>
-									<p>
-										<?php
-										printf( __( 'Fork %s on GitHub and submit a pull request if you would like to pitch in.',
-												'scc' ),
-												'<a href="https://github.com/seanchdavis/simple-course-creator" target="_blank">' . SCC_NAME . '</a>'
-										);
-										?>
-									</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				<?php } ?>
+				settings_fields( 'course_display_settings' );
+				do_settings_sections( 'simple_course_creator' );
+				submit_button();
+				?>
 			</form>
 		</div>
 		<?php
 	}
 
 
+	// =============================================================================
+	// Helpers
+	// =============================================================================
+
 	/**
-	 * The contributors
+	 * Return the full settings array with defaults applied.
+	 *
+	 * @return array
 	 */
-	public function scc_contributors(): string {
-		$contributors     = $this->scc_get_contributors();
-		$contributor_list = '<ul class="wp-people-group">';
+	private function get_options(): array {
 
-		foreach ( $contributors as $contributor ) {
-			$contributor_list .= '<li class="wp-person">';
-			$contributor_list .= sprintf( '<a href="%s" title="%s">',
-					esc_url( 'https://github.com/' . $contributor->login ),
-					esc_html( sprintf( __( 'View %s', 'scc' ), $contributor->login ) )
-			);
-			$contributor_list .= sprintf( '<img src="%s" width="30" height="30" class="gravatar" alt="%s" />',
-					esc_url( $contributor->avatar_url ), esc_html( $contributor->login ) );
-			$contributor_list .= '</a>';
-			$contributor_list .= sprintf( '<a class="web" href="%s">%s</a>',
-					esc_url( 'https://github.com/' . $contributor->login ), esc_html( $contributor->login ) );
-			$contributor_list .= '</a>';
-			$contributor_list .= '</li>';
-		}
-		$contributor_list .= '</ul>';
+		$defaults = array(
+			'display_position'    => 'above',
+			'list_type'           => 'ordered',
+			'scc_orderby'         => 'date',
+			'scc_order'           => 'asc',
+			'current_post'        => 'none',
+			'disable_js'          => '0',
+			'show_author'         => '1',
+			'show_date'           => '1',
+			'enable_front_display' => '1',
+		);
 
-		return $contributor_list;
+		return wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
 	}
 
 
-	/**
-	 * Get the repo contributors
-	 */
-	public function scc_get_contributors() {
-		$transient_key = 'scc_contributors';
-		$contributors  = get_transient( $transient_key );
-		if ( false !== $contributors ) {
-			return $contributors;
-		}
-
-		$response = wp_remote_get( 'https://api.github.com/repos/seanchdavis/simple-course-creator/contributors' );
-		if ( is_wp_error( $response ) ) {
-			return array();
-		}
-
-		$contributors = json_decode( wp_remote_retrieve_body( $response ) );
-		if ( ! is_array( $contributors ) ) {
-			return array();
-		}
-
-		set_transient( $transient_key, $contributors, 3600 );
-
-		return (array) $contributors;
-	}
 }
 
 new SCC_Settings_Page();

@@ -2,62 +2,63 @@
 /**
  * SCC_Post_Listing class
  *
- * This class gathers all the necessary information for creating and
- * outputting the post listing on posts that are part of courses.
+ * Hooks the course post listing into single post content and manages
+ * front-end asset loading with theme override support.
  *
- * The markup for output (as well as its corresponding front-end CSS
- * and JS files) is located in a remote folder so that users can
- * override the files directly from their active theme. However, the
- * complete setup of the system starts here.
+ * Template files (scc-output.php, scc.css, scc-post-listing.js) can be
+ * overridden by placing them in a scc_templates/ directory in the active
+ * theme or child theme.
  *
  * @since 1.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // no accessing this file directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 class SCC_Post_Listing {
 
 
 	/**
-	 * constructor for SCC_Post_Listing class
+	 * Constructor — register hooks.
 	 */
 	public function __construct() {
-
-		// display post listing in content
-		add_filter( 'the_content', array( $this, 'post_listing' ) );
-
-		// load the correct post listing stylesheet based on hierarchy
+		add_filter( 'the_content',       array( $this, 'post_listing' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_styles' ) );
 	}
 
 
 	/**
-	 * determine a post's Course
+	 * Return the first course term assigned to a post.
+	 *
+	 * @param  int            $post_id
+	 * @return WP_Term|false
 	 */
 	public function retrieve_course( $post_id ) {
+
 		$course = wp_get_post_terms( $post_id, 'course' );
+
 		if ( ! is_wp_error( $course ) && ! empty( $course ) && is_array( $course ) ) {
-			$course = current( $course );
-		} else {
-			$course = false;
+			return current( $course );
 		}
-		return $course;
+
+		return false;
 	}
 
 
 	/**
-	 * add post listing to content
+	 * Inject the course post listing into single post content.
 	 *
-	 * @uses retrieve_course()
+	 * Position is controlled by the display_position setting:
+	 * above (default), below, both, or hide.
+	 *
+	 * @param  string $content The post content.
+	 * @return string          Content with course listing injected.
 	 */
 	public function post_listing( $content ) {
+
 		global $post;
-		$default_options = array(
-			'display_position'  => 'above',
-			'disable_js'        => 0,
-		);
-		$options = get_option( 'course_display_settings', $default_options );
-		$options = wp_parse_args( $options, $default_options );
 
 		if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
 			return $content;
@@ -65,129 +66,143 @@ class SCC_Post_Listing {
 
 		$course = $this->retrieve_course( $post->ID );
 
-		// if there's no course, just display the content
 		if ( ! $course ) {
 			return $content;
 		}
 
-		if ( ! isset( $options['disable_js'] ) || $options['disable_js'] != '1' ) {
+		$options  = $this->get_options();
+		$position = $options['display_position'];
+
+		if ( 'hide' === $position ) {
+			return $content;
+		}
+
+		if ( '1' !== $options['disable_js'] ) {
 			wp_enqueue_script( 'scc-post-list-js' );
 		}
 
 		ob_start();
-
-		// include *the appropriate* template file
 		$this->get_template( 'scc-output.php', array( 'course' => $course ) );
-
 		$post_listing = ob_get_clean();
 
-		// display full course based on plugin display settings
-		switch ( $options['display_position'] ) {
+		switch ( $position ) {
 			case 'below':
-				$content = $content . $post_listing;
-				break;
+				return $content . $post_listing;
 			case 'both':
-				$content = $post_listing . $content . $post_listing;
-				break;
-			case 'hide':
-				$content = $content;
-				break;
+				return $post_listing . $content . $post_listing;
 			default:
-				$content = $post_listing . $content;
+				return $post_listing . $content;
 		}
-		return $content;
 	}
 
 
 	/**
-	 * get and include template files
+	 * Locate and include a template file.
 	 *
-	 * @uses locate_template()
+	 * Checks child theme then parent theme before falling back to the
+	 * plugin's own templates directory.
+	 *
+	 * @param string $template_name Filename of the template (e.g. 'scc-output.php').
+	 * @param array  $args          Variables to expose to the template. Accepts 'course'.
 	 */
-	public function get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
-		if ( $args && is_array($args) ) {
-			extract( $args );
-		}
-		include( $this->locate_template( $template_name, $template_path, $default_path, $args['course']->slug ) );
+	public function get_template( $template_name, $args = array() ) {
+
+		$course = isset( $args['course'] ) ? $args['course'] : null;
+
+		include $this->locate_template( $template_name, $course ? $course->slug : '' );
 	}
 
 
 	/**
-	 * locate a template and return the path for inclusion
+	 * Resolve the path to a template file, respecting the theme override hierarchy.
 	 *
-	 * @used_by get_template()
+	 * @param  string $template_name Filename of the template.
+	 * @param  string $slug          Course slug, passed through to locate_template().
+	 * @return string                Absolute path to the resolved template file.
 	 */
-	public function locate_template( $template_name, $template_path = '', $default_path = '', $slug = '' ) {
-		if ( ! $template_path ) {
-			$template_path = 'scc_templates';
-		}
-		if ( ! $default_path ) {
-			$default_path  = SCC_DIR . 'includes/scc_templates/';
-		}
+	public function locate_template( $template_name, $slug = '' ) {
 
-		// Look within passed path within the theme - this is priority
 		$template = locate_template(
 			array(
-				trailingslashit( $template_path ) . $template_name,
-				$template_name
+				trailingslashit( 'scc_templates' ) . $template_name,
+				$template_name,
 			),
-			true,
 			false,
-			$slug
+			false,
+			array( 'slug' => $slug )
 		);
 
-		// Get default template
 		if ( ! $template ) {
-			$template = $default_path . $template_name;
+			$template = SCC_DIR . 'includes/scc_templates/' . $template_name;
 		}
+
 		return $template;
 	}
 
 
 	/**
-	 * setup stylesheet and script for post listing
+	 * Register and enqueue front-end styles and scripts.
 	 *
-	 * @credits stylesheet hierarchy approach by Easy Digital Downloads
+	 * Checks child theme, then parent theme, then falls back to the
+	 * plugin's own files. Assets are only enqueued on single post pages.
+	 *
+	 * @credits Stylesheet hierarchy approach inspired by Easy Digital Downloads.
 	 */
 	public function frontend_styles() {
 
-		// if the active theme has a properly named JS file in the correct
-		// location within the theme, store it in a variable
-		$child_theme_scc_script = trailingslashit( get_stylesheet_directory() ) . 'scc_templates/scc-post-listing.js';
-		$parent_theme_scc_script = trailingslashit( get_template_directory() ) . 'scc_templates/scc-post-listing.js';
-
-		// check to see if the above variables actually had files
-		// if so, store those variables in a new variable
-		// $primary_script will only hold one value based on which files exist
-		if ( file_exists( $child_theme_scc_script ) ) {
-			$primary_script = trailingslashit( get_stylesheet_directory_uri() ) . 'scc_templates/scc-post-listing.js';
-		} elseif ( file_exists( $parent_theme_scc_script ) ) {
-			$primary_script = trailingslashit( get_template_directory_uri() ) . 'scc_templates/scc-post-listing.js';
-		} else {
-			$primary_script = SCC_URL . 'includes/scc_templates/scc-post-listing.js';
+		if ( ! is_single() ) {
+			return;
 		}
 
-		// if the active theme has a properly named CSS file in the correct
-		// location within the theme, store it in a variable
-		$child_theme_scc_style = trailingslashit( get_stylesheet_directory() ) . 'scc_templates/scc.css';
-		$parent_theme_scc_style = trailingslashit( get_template_directory() ) . 'scc_templates/scc.css';
+		$primary_script = $this->resolve_asset_url( 'scc_templates/scc-post-listing.js', SCC_URL . 'includes/scc_templates/scc-post-listing.js' );
+		$primary_style  = $this->resolve_asset_url( 'scc_templates/scc.css',             SCC_URL . 'includes/scc_templates/scc.css' );
 
-		// check to see if the above variables actually had files
-		// if so, store those variables in a new variable
-		// $primary_style will only hold one value based on which files exist
-		if ( file_exists( $child_theme_scc_style ) ) {
-			$primary_style = trailingslashit( get_stylesheet_directory_uri() ) . 'scc_templates/scc.css';
-		} elseif ( file_exists( $parent_theme_scc_style ) ) {
-			$primary_style = trailingslashit( get_template_directory_uri() ) . 'scc_templates/scc.css';
-		} else {
-			$primary_style = SCC_URL . 'includes/scc_templates/scc.css';
+		wp_enqueue_style( 'scc-post-listing-css', $primary_style );
+		wp_register_script( 'scc-post-list-js', $primary_script, array( 'jquery' ), SCC_VERSION, true );
+	}
+
+
+	/**
+	 * Resolve the URL for a theme-overridable asset.
+	 *
+	 * Checks child theme directory, then parent theme directory, then
+	 * returns the fallback URL.
+	 *
+	 * @param  string $relative_path Path relative to theme root (e.g. 'scc_templates/scc.css').
+	 * @param  string $fallback_url  Plugin asset URL to use if no theme override is found.
+	 * @return string                Resolved asset URL.
+	 */
+	private function resolve_asset_url( $relative_path, $fallback_url ) {
+
+		$child_path  = trailingslashit( get_stylesheet_directory() ) . $relative_path;
+		$parent_path = trailingslashit( get_template_directory() ) . $relative_path;
+
+		if ( file_exists( $child_path ) ) {
+			return trailingslashit( get_stylesheet_directory_uri() ) . $relative_path;
 		}
 
-		// register and enqueue the appropriate assets based on above checks
-		if ( is_single() ) {
-			wp_enqueue_style( 'scc-post-listing-css', $primary_style );
-			wp_register_script( 'scc-post-list-js', $primary_script, array( 'jquery' ), SCC_VERSION, true );
+		if ( file_exists( $parent_path ) ) {
+			return trailingslashit( get_template_directory_uri() ) . $relative_path;
 		}
+
+		return $fallback_url;
+	}
+
+
+	/**
+	 * Return settings with defaults applied.
+	 *
+	 * @return array
+	 */
+	private function get_options(): array {
+
+		$defaults = array(
+			'display_position' => 'above',
+			'disable_js'       => '0',
+		);
+
+		return wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
 	}
 }
+
 new SCC_Post_Listing();

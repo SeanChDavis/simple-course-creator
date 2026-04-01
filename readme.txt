@@ -1,98 +1,132 @@
 === Simple Course Creator ===
 Contributors: sdavis2702
-Tags: series, course, lesson, taxonomy, sdavis2702
-Requires at least: 3.8
-Tested up to: 6.9.1
-Stable tag: 1.0.7
+Tags: course, series, lesson, taxonomy, posts
+Requires at least: 5.0
+Requires PHP: 7.4
+Tested up to: 6.7
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Easily create, output, and manage post series.
+Organize WordPress posts into courses and display a course listing within each post.
 
 == Description ==
 
-Simple Course Creator is designed to easily link posts together in a series and output that series list in the content of each included post. A post can only be assigned to one course that way it can display the rest of the posts in its series.
+Simple Course Creator lets you group WordPress posts into courses using a custom taxonomy, then automatically displays a linked list of all posts in the same course within each post's content.
 
-Output can be displayed above the post content, below, or both. There's also an option to display the posts as a number list, bullet list, or with no list indicator.
+**Features**
 
-Extend the functionality of Simple Course Creator with these add-on plugins:
+* Create unlimited courses from the Posts menu — just like categories and tags
+* Assign posts to a course from the edit post screen or the manage posts screen
+* Display the course listing above content, below, or both
+* Choose between numbered list, bullet list, or no list indicator
+* Sort the listing by date, title, author, last modified, comment count, or random
+* Style the current post in the listing as bold, italic, or strikethrough
+* Optionally collapse the listing behind a toggle link (JavaScript)
 
-* [SCC Customizer](https://github.com/seanchdavis/simple-course-creator-customizer/) - Customizer the SCC output using the native WordPress customizer.
-* [SCC Post Meta](https://github.com/seanchdavis/simple-course-creator-post-meta/) - Add author and published date to SCC post listing items.
-* [SCC Front Display](https://github.com/seanchdavis/simple-course-creator-front-display/) - Indicate a post’s course on the blog home, archive pages, and search results.
+**Post Meta**
+
+Show author and publish date beneath each item in the course listing. Both are enabled by default and can be toggled from the settings page.
+
+**Front Display**
+
+On the blog home, archive pages, and search results, indicate that a post belongs to a course. Enabled by default and can be toggled from the settings page.
+
+**Customization**
+
+Style the course box, post meta output, and front display indicator directly from the WordPress Customizer — no custom CSS required. For deeper customization, override the plugin's template files in your active theme.
+
+Create a directory called `scc_templates` in the root of your active theme and copy any files from the plugin's `includes/scc_templates/` directory into it. Theme files take priority over plugin files.
 
 == Installation ==
 
 1. Upload `simple-course-creator` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Create an unlimited number of courses under the WordPress 'Posts' menu
-4. Add single posts to a course on the post edit screen or the manage posts screen
+2. Activate the plugin through the Plugins menu in WordPress
+3. Create courses under Posts > Courses
+4. Assign posts to a course from the edit post screen or the manage posts screen
+5. Optionally configure display settings under Settings > Course Settings
+
+**Upgrading from v1.x with add-on plugins**
+
+If you were using the separate SCC Customizer, SCC Front Display, or SCC Post Meta plugins, deactivate and delete them after updating to v2.0.0. All functionality is now built into this plugin. Your existing Customizer settings and display preferences carry over automatically.
 
 == Frequently Asked Questions ==
 
 = Can a post be assigned to more than one course? =
 
-No. A post should only be assigned to one course. This is because the purpose of the plugin is to display the other
-posts that are in the same course as the post being viewed. In order to do that, the other posts must be pulled from a
-single source (the one course you have chosen). Technically, multiple courses can be added to a posts. However, only
-course will display on your post, and you will not have control of which course that is.
+No. A post should only be assigned to one course. The purpose of the plugin is to display all other posts in the same course as the one being viewed, so a single course assignment is required for that to work correctly.
 
-= Can I edit the course HTML output? =
+= Can I customize the course listing output? =
 
-Yes. When creating a new course, the description and course title fields are used to display an introduction to the course. If they are filled out, they will display.
+Yes, several ways.
 
-From there, there are multiple ways to edit additional output.
+**Hooks** — Add actions in your theme's functions.php to insert content at specific points in the output. Available hooks, in order of appearance:
 
--- The first and easiest way is to use the built-in hooks and filter to customize the course box. You'd write your actions in your active theme functions file.
+* `scc_before_container`
+* `scc_container_top`
+* `scc_below_title`
+* `scc_below_description`
+* `scc_before_toggle`
+* `scc_after_toggle`
+* `scc_above_list`
+* `scc_before_list_item` — receives `$post_id`
+* `scc_after_list_item` — receives `$post_id`
+* `scc_below_list`
+* `scc_container_bottom`
+* `scc_after_container`
 
-Here's a list of all the hook names you can use to insert custom content.
+The toggle link text is filterable via the `course_toggle` filter (default: "full course").
 
-* scc_before_container
-* scc_container_top
-* scc_below_title
-* scc_below_description
-* scc_before_toggle
-* scc_after_toggle
-* scc_above_list
-* scc_before_list_item
-* scc_after_list_item
-* scc_below_list
-* scc_container_bottom
-* scc_after_container
+The front display leading and trailing text are filterable via `course_leading_text` and `course_trailing_text`.
 
-The course display toggle link is also filtered. Use the following filter to change its text.
+The post meta label text is filterable via `written_by` and `written_on`.
 
-* course_toggle
+**Template override** — Create an `scc_templates/` directory in your active theme and copy any files from `includes/scc_templates/` into it. Your theme versions will take priority.
 
--- The second way is to override the plugin display files in your active theme.
+**Customizer** — Use the Simple Course Creator Design section in Appearance > Customize to adjust colors, borders, padding, and typography for all three output components.
 
-You'd create a directory in the ROOT of your active theme called `scc_templates` and in it, copy any of the files from the `includes/scc_templates` directory of the plugin. Your new theme files will override the plugin files.
+**Custom CSS** — Write CSS in your theme targeting `#scc-wrap`, `.scc-post-meta`, and `.scc-front-display`.
 
-Only use this method if you know your way around PHP, HTML, CSS, and JS.
+= Can I add my own styles to the Customizer output? =
 
--- Lastly, for minimal display tweaks, simply write CSS in your active theme that overrides the default plugin CSS, which is minimal.
+Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. Hook into it to append additional CSS without opening a new style tag.
 
 == Screenshots ==
 
-1. settings Page with output options
-2. create a course just like categories and tags
-3. assign a post to a course from edit post screen
-4. filter course information from manage posts screen
-5. course output collapsed
-6. course output expanded
+1. Settings page with display options
+2. Create a course just like categories and tags
+3. Assign a post to a course from the edit post screen
+4. Filter posts by course on the manage posts screen
+5. Course listing collapsed
+6. Course listing expanded
 
 == Changelog ==
 
+= 2.0.0 =
+* Consolidated: SCC Customizer, SCC Front Display, and SCC Post Meta are now built into this plugin
+* Added: Post Meta settings (show/hide author and date) on the settings page
+* Added: Front Display toggle on the settings page
+* Added: Unified Customizer section covering all three output components
+* Added: Upgrade routine to migrate settings from the former add-on plugins
+* Fixed: Missing nonce verification and input sanitization on term meta save
+* Fixed: Unescaped output throughout the frontend template and display classes
+* Fixed: Missing sanitize_callback on all Customizer color settings
+* Fixed: Whitelist validation on all settings page select fields
+* Fixed: Incorrect WP_Query orderby value ('random' → 'rand')
+* Fixed: Duplicate element ID on current post style select field
+* Fixed: Logic bug in columns() causing undefined variable on first load
+* Updated: Requires at least WordPress 5.0, PHP 7.4
+
 = 1.0.7 =
-* Added: setting for ordering the post listing using the "order" parameter (ascending or descending)
-* Removed: "scc_order" filter, which is now replaced by the above setting
-* Tweaked: default border and padding on the post listing display
+* Added: Setting for ordering the post listing using the "order" parameter (ascending or descending)
+* Removed: "scc_order" filter, replaced by the above setting
+* Tweaked: Default border and padding on the post listing display
 
 = 1.0.6 =
-* Added: setting for ordering the post listing using the "orderby" parameter
-* Added: "scc_order" filter to control whether the post listing displays ASC or DESC
+* Added: Setting for ordering the post listing using the "orderby" parameter
+* Added: "scc_order" filter to control ascending or descending order
 * Fixed: PHP notices
-* Fixed: database settings values inconsistencies
+* Fixed: Database settings value inconsistencies
 
 = 1.0.5 =
 * Tweaked: Code formatting
@@ -101,14 +135,14 @@ Only use this method if you know your way around PHP, HTML, CSS, and JS.
 * Tweaked: Improved translation strings and updated .pot file
 
 = 1.0.3 =
-* New: Added option to select the current post text style (bold, line-through, or italic)
+* Added: Option to select the current post text style (bold, strikethrough, or italic)
 * Removed: Current post default bold font weight
 
 = 1.0.2 =
-* Fixed: PHP warnings based on sanitization of plugin settings
+* Fixed: PHP warnings from settings sanitization
 
 = 1.0.1 =
-* Added: "Disable JavaScript" (expand/collapse of post listing) setting on settings page
+* Added: Disable JavaScript setting to show the course listing without a toggle
 
 = 1.0.0 =
-* first stable version
+* First stable release
