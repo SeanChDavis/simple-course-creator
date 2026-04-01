@@ -440,66 +440,19 @@ class SCC_Settings_Page {
 	// =============================================================================
 
 	/**
-	 * Render the settings page with Display and Information tabs.
+	 * Render the settings page.
 	 */
 	public function settings_page(): void {
 
-		$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'simple_course_creator';
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( SCC_NAME . ' ' . __( 'Settings', 'scc' ) ); ?></h1>
-			<h2 class="nav-tab-wrapper">
-				<a href="?page=simple_course_creator&tab=simple_course_creator" class="nav-tab <?php echo $active_tab === 'simple_course_creator' ? 'nav-tab-active' : ''; ?>">
-					<?php esc_html_e( 'Display', 'scc' ); ?>
-				</a>
-				<a href="?page=simple_course_creator&tab=simple_course_creator_info" class="nav-tab <?php echo $active_tab === 'simple_course_creator_info' ? esc_attr( 'nav-tab-active' ) : ''; ?>">
-					<?php esc_html_e( 'Information', 'scc' ); ?>
-				</a>
-			</h2>
 			<form method="post" action="options.php">
-				<?php if ( 'simple_course_creator' === $active_tab ) : ?>
-					<?php
-					settings_fields( 'course_display_settings' );
-					do_settings_sections( 'simple_course_creator' );
-					submit_button();
-					?>
-				<?php elseif ( 'simple_course_creator_info' === $active_tab ) : ?>
-					<h2><?php echo esc_html( SCC_NAME . ' ' . __( 'Information', 'scc' ) ); ?></h2>
-					<table class="form-table plugin-info">
-						<tbody>
-							<tr>
-								<th scope="row"><?php esc_html_e( 'Plugin Resources', 'scc' ); ?></th>
-								<td>
-									<p>
-										<?php
-										printf(
-											/* translators: 1: hooks & filters docs link, 2: file overrides docs link */
-											esc_html__( 'New courses are created under the Posts menu. Once a course is created, posts can be assigned from the manage posts and edit post screens. To add content to the post listing output, see the hooks & filters documentation %1$s. To override the output, CSS, and JS files, see the file overrides documentation %2$s.', 'scc' ),
-											'<a href="https://github.com/seanchdavis/simple-course-creator#wordpress-hooks--filters" target="_blank">[?]</a>',
-											'<a href="https://github.com/seanchdavis/simple-course-creator#active-theme-file-overrides" target="_blank">[?]</a>'
-										);
-										?>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row"><?php esc_html_e( 'Contributors', 'scc' ); ?></th>
-								<td>
-									<?php echo $this->scc_contributors(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output is built with escaped values ?>
-									<p>
-										<?php
-										printf(
-											/* translators: %s: link to the GitHub repo */
-											esc_html__( 'Fork %s on GitHub and submit a pull request if you would like to contribute.', 'scc' ),
-											'<a href="https://github.com/seanchdavis/simple-course-creator" target="_blank">' . esc_html( SCC_NAME ) . '</a>'
-										);
-										?>
-									</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				<?php endif; ?>
+				<?php
+				settings_fields( 'course_display_settings' );
+				do_settings_sections( 'simple_course_creator' );
+				submit_button();
+				?>
 			</form>
 		</div>
 		<?php
@@ -533,73 +486,6 @@ class SCC_Settings_Page {
 	}
 
 
-	/**
-	 * Build the contributors list HTML from the GitHub API.
-	 *
-	 * @return string HTML list of contributors.
-	 */
-	public function scc_contributors(): string {
-
-		$contributors     = $this->scc_get_contributors();
-		$contributor_list = '<ul class="wp-people-group">';
-
-		foreach ( $contributors as $contributor ) {
-			$contributor_list .= '<li class="wp-person">';
-			$contributor_list .= sprintf(
-				'<a href="%s" title="%s">',
-				esc_url( 'https://github.com/' . $contributor->login ),
-				esc_attr( sprintf( __( 'View %s', 'scc' ), $contributor->login ) )
-			);
-			$contributor_list .= sprintf(
-				'<img src="%s" width="30" height="30" class="gravatar" alt="%s" />',
-				esc_url( $contributor->avatar_url ),
-				esc_attr( $contributor->login )
-			);
-			$contributor_list .= '</a>';
-			$contributor_list .= sprintf(
-				'<a class="web" href="%s">%s</a>',
-				esc_url( 'https://github.com/' . $contributor->login ),
-				esc_html( $contributor->login )
-			);
-			$contributor_list .= '</li>';
-		}
-
-		$contributor_list .= '</ul>';
-
-		return $contributor_list;
-	}
-
-
-	/**
-	 * Fetch GitHub contributors, cached in a one-hour transient.
-	 *
-	 * @return array Array of contributor objects, empty array on failure.
-	 */
-	public function scc_get_contributors(): array {
-
-		$transient_key = 'scc_contributors';
-		$contributors  = get_transient( $transient_key );
-
-		if ( false !== $contributors ) {
-			return $contributors;
-		}
-
-		$response = wp_remote_get( 'https://api.github.com/repos/seanchdavis/simple-course-creator/contributors' );
-
-		if ( is_wp_error( $response ) ) {
-			return array();
-		}
-
-		$contributors = json_decode( wp_remote_retrieve_body( $response ) );
-
-		if ( ! is_array( $contributors ) ) {
-			return array();
-		}
-
-		set_transient( $transient_key, $contributors, HOUR_IN_SECONDS );
-
-		return (array) $contributors;
-	}
 }
 
 new SCC_Settings_Page();
