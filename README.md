@@ -3,131 +3,191 @@ Simple Course Creator
 
 https://scc.crispydiv.com
 
-Simple Course Creator is a WordPress plugin designed to link posts together in a series and output that series list in the content of each included post.
+Organize WordPress posts into courses and display a course listing within each post.
 
-#### How to Download & Install in WordPress
-https://scc.crispydiv.com/how-to-download-from-github/
-
-#### Add-ons
-* [Simple Course Creator Customizer](https://github.com/seanchdavis/simple-course-creator-customizer)
-* [Simple Course Creator Post Meta](https://github.com/seanchdavis/simple-course-creator-post-meta)
-* [Simple Course Creator Front Display](https://github.com/seanchdavis/simple-course-creator-front-display)
-
-### How It Works
 ---
+
+## Table of Contents
+
+- [What's Included](#whats-included)
+- [How It Works](#how-it-works)
+- [Settings](#settings)
+- [Post Meta](#post-meta)
+- [Front Display](#front-display)
+- [Theme Overrides](#theme-overrides)
+  - [Customizer](#customizer)
+  - [Hooks & Filters](#hooks--filters)
+  - [Template File Overrides](#template-file-overrides)
+- [Bugs and Contributions](#bugs-and-contributions)
+- [License](#license)
+
+---
+
+## What's Included
+
+As of v2.0.0, Simple Course Creator is a single plugin with no add-ons required. Customizer styles, post meta output, and front display are all built in.
+
+If you were using the separate SCC Customizer, SCC Post Meta, or SCC Front Display plugins, deactivate and delete them after upgrading. Your existing settings carry over automatically.
+
+---
+
+## How It Works
 
 Once activated, a new taxonomy is added to your Posts menu called "Courses." Courses are created just like categories and tags.
 
-When creating a new course, it's important to give the course a description as well as a title, which is a new field added by this plugin.
+When creating a new course, give it a title and a description. The description is optional but recommended — it appears above the post listing inside the course box.
 
-![Create New Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-1-Course-Creation.png)
+![Create New Course](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-create-course.jpg)
 
-Courses can also be created while editing a post, just like creating a new category or tag. You can also select an existing course from the post editor and save it.
+Courses can also be created or selected while editing a post, just like adding a category.
 
-![Edit -post - Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-3-Post-Edit-w-Course-scaled.png)
-![All posts - Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-2-All-Posts-by-Course-scaled.png)
+![Edit Post — Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-3-Post-Edit-w-Course-scaled.png)
+![All Posts — Filter by Course](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-all-posts.jpg)
 
-Once a course is selected and saved, a course listing will appear in the content of the as long as it's not the only post in a course.
+Once a post is assigned to a course, a course listing appears in the post content — as long as it isn't the only post in that course. The listing shows the course title, the course description, and a toggle link. Clicking the link expands the listing to reveal all posts in the course. All posts are linked except the current one.
 
-The course listing will display as a container that shows the course title and the course description if they exist. (Make sure they exist by editing the course details under `WP Dashboard -> Posts -> Courses`.)
+![Course Listing — Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-5-Included-Post-Course-Collapsed-scaled.png)
+![Course Listing — Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-post-listing-expanded.jpg)
 
-The series of posts will be hidden until you click a subtle link for displaying them, at which point the container
- will expand to reveal all posts included in the course. All posts will be linked except for the current post.
+Styles are minimal. Theme styles are inherited as much as possible.
 
-![Course Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-5-Included-Post-Course-Collapsed-scaled.png)
-
-![Course Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-6-Included-Post-Course-Expanded-scaled.png)
-
-Styles are kept to a minimum. Theme styles are inherited as much as possible.
-
-### Simple Course Creator Settings
 ---
 
-Simple Course Creator comes with simple options.
+## Settings
 
-1. Choose to display your course containers above post content, below post content, both above and below post content
-, or do not display it at all while still preserving the course configuration.
+Settings are under **Settings > Course Settings**.
 
-2. Choose your course list style type. They can be displayed as a numbered list, a bulleted list, or a list with no list
- indicator at all... simply stacked like paragraphs.
- 
-3. Choose to sort your posts by date, author, title, last modified, random, or comment count.
- 
-4. Choose to display your sorted posts in ascending order or descending order.
- 
-5. Choose a display style of the current post in your post listing. Select between bold, strike, italic, or no style
-  at all.
-  
-6. Disable plugin javascript, which causes the post listing to be fully expended on page load. The show/hide
-   function is removed. 
+![Course Settings Page](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-settings.jpg)
 
-![Simple Course Creator Settings](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-4-Course-Display-Settings.png)
+**Display position** — Show the course listing above post content, below it, both, or not at all (preserves course data without displaying it).
 
-### Theme Overrides
+**List style** — Numbered list, bulleted list, or no list indicator.
+
+**Sort by** — Date, title, author, last modified, comment count, or random.
+
+**Order** — Ascending or descending.
+
+**Current post style** — Highlight the current post in the listing as bold, italic, strikethrough, or no style.
+
+**Disable JavaScript** — Removes the toggle and shows the post listing expanded on page load.
+
+**Show author / Show date** — Toggle the post meta output (author name and publish date) beneath each item in the course listing. See [Post Meta](#post-meta).
+
+**Enable front display** — Toggle the course indicator on the blog home, archives, and search results. See [Front Display](#front-display).
+
 ---
 
-#### WordPress Hooks & Filters
+## Post Meta
 
-The simplest way to edit your course output is with hooks and filters in your active theme's functions file. SCC comes with built-in hooks littered throughout the output as well as a filter for the course toggle.
+When enabled, each item in the course listing shows the post author and publish date beneath the title.
 
-Here's a list of all the hook names:
+![Post Meta Output](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-post-meta.jpg)
 
-* `scc_before_container`
-* `scc_container_top`
-* `scc_below_title`
-* `scc_below_description`
-* `scc_before_toggle`
-* `scc_after_toggle`
-* `scc_above_list`
-* `scc_before_list_item`
-* `scc_after_list_item`
-* `scc_below_list`
-* `scc_container_bottom`
-* `scc_after_container`
+Toggle both fields independently under **Settings > Course Settings**.
 
-To use any of these hooks, create your own custom function and use WordPress' `add_action()` function to call your function with the specific hook location. Here's an example.
+The label text is filterable in your theme's `functions.php`:
 
-``` php
-function function_name() { ?>
-    -- custom --
-<?php }
-add_action( 'scc_container_top', 'function_name' );
-```
-	
-Pasting that PHP into your active theme's functions file will output "-- custom --" just inside every course container box.
+```php
+add_filter( 'written_by', function( $text ) {
+    return 'by';
+} );
 
-To edit the "full course" toggle link, use the built-in filter `course_toggle` like so.
-
-``` php
-function function_name_filter( $toggle ) {
-	$toggle = str_replace( 'full course', 'complete series', $toggle );
-	return $toggle;
-}
-add_filter( 'course_toggle', 'function_name_filter' );
+add_filter( 'written_on', function( $text ) {
+    return 'published';
+} );
 ```
 
-With a little CSS usage in your own theme stylesheet, the plugin settings, and the above actions, you can customize SCC however you'd like.
-
-Or...
-
-#### Active Theme File Overrides
-
-You are more than welcome to override the basic default styles, behavior, or HTML template responsible for displaying the course container.
-
-If you only want to edit a few CSS styles, you're better off using your own theme's stylesheet and simply writing stronger CSS.
-
-If you would like to override the actual CSS file, JavaScript file, or HTML template for displaying the course container, you can easily do so by creating a folder in the root of your theme called `scc_templates` and copying any of the files you'd like from the plugin's `includes/scc_templates` folder into your new theme folder. 
-
-Your theme files will now completely override the plugin files.
-
-Be sure to copy these files and not simply create new, empty ones. Even if they're empty, they'll still override.
-
-### Bugs and Contributions
 ---
 
-If you notice any mistakes, feel free to fork the repo and submit a pull request with your corrections. The same is true of any features you feel should be added or changes that can be made. 
+## Front Display
 
-### License
+When enabled, a course indicator appears beneath each post excerpt on the blog home, archive pages, and search results — wherever that post belongs to a course.
+
+![Front Display Output](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-front-display.jpg)
+
+Toggle it under **Settings > Course Settings**. The leading and trailing text are filterable:
+
+```php
+add_filter( 'course_leading_text', function( $text ) {
+    return 'Part of the';
+} );
+
+add_filter( 'course_trailing_text', function( $text ) {
+    return 'series.';
+} );
+```
+
 ---
 
-This plugin, like WordPress, is licensed under the GPL. Do what you want with it. I seriously don't care.
+## Theme Overrides
+
+### Customizer
+
+The **Simple Course Creator Design** section in **Appearance > Customize** lets you adjust colors, borders, padding, and font sizes for all three output components — the course listing box, post meta, and front display — without writing CSS.
+
+![Customizer — SCC Design Section](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-customizer.jpg)
+
+The `scc_add_to_styles` action fires inside the generated `<style>` block if you need to append additional CSS without opening a separate style tag.
+
+### Hooks & Filters
+
+Add actions in your theme's `functions.php` to insert content at specific points in the course listing output. Hooks fire in this order:
+
+| Hook | Notes |
+|---|---|
+| `scc_before_container` | Before the `#scc-wrap` div |
+| `scc_container_top` | After the opening `#scc-wrap` div |
+| `scc_below_title` | After the course title |
+| `scc_below_description` | After the course description |
+| `scc_before_toggle` | Before the toggle link text |
+| `scc_after_toggle` | After the toggle link text |
+| `scc_above_list` | Before the list opening tag |
+| `scc_before_list_item` | Before each list item — receives `$post_id` |
+| `scc_after_list_item` | After each list item — receives `$post_id` |
+| `scc_below_list` | After the list closing tag |
+| `scc_container_bottom` | Before the closing `#scc-wrap` div |
+| `scc_after_container` | After the `#scc-wrap` div |
+
+Example:
+
+```php
+add_action( 'scc_container_top', function() {
+    echo '<p>Now reading a course post.</p>';
+} );
+```
+
+For hooks that receive `$post_id`:
+
+```php
+add_action( 'scc_before_list_item', function( $post_id ) {
+    echo '<span class="my-label">' . esc_html( get_the_category_list( ', ', '', $post_id ) ) . '</span>';
+} );
+```
+
+**Filters:**
+
+| Filter | Default | Notes |
+|---|---|---|
+| `course_toggle` | `"full course"` | Toggle link text |
+| `course_leading_text` | `"This post is part of the"` | Front display leading text |
+| `course_trailing_text` | `"course."` | Front display trailing text |
+| `written_by` | `"written by"` | Post meta author label |
+| `written_on` | `"on"` | Post meta date label |
+
+### Template File Overrides
+
+To override the course listing template, create a directory called `scc_templates` in the root of your active theme and copy any files from the plugin's `includes/scc_templates/` directory into it. Theme files take priority over plugin files.
+
+Copy the files — don't create empty ones. An empty file still overrides.
+
+---
+
+## Bugs and Contributions
+
+If you notice any mistakes, feel free to fork the repo and submit a pull request. The same goes for features or improvements.
+
+---
+
+## License
+
+This plugin, like WordPress, is licensed under the GPL. Do what you want with it.
