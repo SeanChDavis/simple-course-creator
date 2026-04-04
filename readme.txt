@@ -4,7 +4,7 @@ Tags: course, series, lesson, taxonomy, posts
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.7
-Stable tag: 2.1.0
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,16 +102,14 @@ Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. 
 
 == Changelog ==
 
-= 2.1.0 =
-* Changed: All plugin option keys now prefixed with `scc_` (`course_display_settings` → `scc_display_settings`, `taxonomy_{id}` → `scc_term_{id}`)
-* Added: Upgrade routine to migrate existing option data to new key names
-
 = 2.0.0 =
 * Consolidated: SCC Customizer, SCC Front Display, and SCC Post Meta are now built into this plugin
 * Added: Post Meta settings (show/hide author and date) on the settings page
 * Added: Front Display toggle on the settings page
-* Added: Unified Customizer section covering all three output components
-* Added: Upgrade routine to migrate settings from the former add-on plugins
+* Added: Unified Customizer section — all settings stored in a single scc_customizer option, independent of the active theme
+* Added: Upgrade routine to migrate all settings from the former add-on plugins
+* Changed: All plugin option keys prefixed with scc_ (course_display_settings → scc_display_settings, taxonomy_{id} → scc_term_{id})
+* Fixed: Customizer integer settings were stored as theme_mods — now stored as options so they persist across theme switches
 * Fixed: Missing nonce verification and input sanitization on term meta save
 * Fixed: Unescaped output throughout the frontend template and display classes
 * Fixed: Missing sanitize_callback on all Customizer color settings

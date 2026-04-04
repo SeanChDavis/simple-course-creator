@@ -3,7 +3,7 @@
  * Plugin Name: Simple Course Creator
  * Plugin URI: https://scc.crispydiv.com/
  * Description: Organize WordPress posts into courses and display a course listing within each post.
- * Version: 2.1.0
+ * Version: 2.0.0
  * Author: Sean Davis
  * Author URI: https://crispydiv.com/
  * License: GPL2
@@ -52,7 +52,7 @@ class Simple_Course_Creator {
 	public function __construct() {
 
 		define( 'SCC_NAME',    'Simple Course Creator' );
-		define( 'SCC_VERSION', '2.1.0' );
+		define( 'SCC_VERSION', '2.0.0' );
 		define( 'SCC_DIR',     trailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'SCC_URL',     trailingslashit( plugin_dir_url( __FILE__ ) ) );
 
@@ -83,10 +83,6 @@ class Simple_Course_Creator {
 			$this->migrate_v2();
 		}
 
-		if ( version_compare( $stored_version, '2.1.0', '<' ) ) {
-			$this->migrate_v2_1();
-		}
-
 		update_option( 'scc_db_version', SCC_VERSION );
 	}
 
@@ -94,13 +90,25 @@ class Simple_Course_Creator {
 	/**
 	 * Migrations for v2.0.0.
 	 *
+	 * Display settings:
 	 * - display_author (1 = hide) → show_author (1 = show)
 	 * - display_date   (1 = hide) → show_date   (1 = show)
 	 * - Adds enable_front_display = '1' (on by default for existing installs)
-	 * - Removes the now-unused display_author and display_date keys
-	 * - Removes the now-unused scc_orderby and scc_order standalone options
+	 * - Renames course_display_settings → scc_display_settings
+	 * - Removes standalone scc_orderby and scc_order options
+	 *
+	 * Term meta:
+	 * - Renames taxonomy_{term_id} → scc_term_{term_id}
+	 *
+	 * Customizer:
+	 * - Consolidates individual scc_* and sccfd_* options and theme_mods
+	 *   into a single scc_customizer option array
 	 */
 	private function migrate_v2(): void {
+
+		// -------------------------------------------------------------------------
+		// Display settings
+		// -------------------------------------------------------------------------
 
 		$settings = get_option( 'course_display_settings', array() );
 
@@ -125,30 +133,17 @@ class Simple_Course_Creator {
 			$settings['enable_front_display'] = '1';
 		}
 
-		update_option( 'course_display_settings', $settings );
+		update_option( 'scc_display_settings', $settings );
+		delete_option( 'course_display_settings' );
 
-		// Remove standalone options superseded by course_display_settings.
+		// Remove standalone options superseded by scc_display_settings.
 		delete_option( 'scc_orderby' );
 		delete_option( 'scc_order' );
-	}
 
+		// -------------------------------------------------------------------------
+		// Term meta: taxonomy_{term_id} → scc_term_{term_id}
+		// -------------------------------------------------------------------------
 
-	/**
-	 * Migrations for v2.1.0.
-	 *
-	 * - Renames course_display_settings → scc_display_settings
-	 * - Renames taxonomy_{term_id}      → scc_term_{term_id}
-	 */
-	private function migrate_v2_1(): void {
-
-		// Migrate course_display_settings → scc_display_settings.
-		$settings = get_option( 'course_display_settings', null );
-		if ( null !== $settings ) {
-			update_option( 'scc_display_settings', $settings );
-			delete_option( 'course_display_settings' );
-		}
-
-		// Migrate taxonomy_{term_id} → scc_term_{term_id}.
 		$terms = get_terms( array( 'taxonomy' => 'course', 'hide_empty' => false ) );
 		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 			foreach ( $terms as $term ) {
@@ -158,6 +153,61 @@ class Simple_Course_Creator {
 					delete_option( 'taxonomy_' . $term->term_id );
 				}
 			}
+		}
+
+		// -------------------------------------------------------------------------
+		// Customizer: consolidate into scc_customizer option array
+		//
+		// Integer/checkbox settings were stored as individual theme_mods.
+		// Color settings were stored as individual wp_options rows.
+		// Both are merged into a single scc_customizer option.
+		// -------------------------------------------------------------------------
+
+		$customizer = array();
+
+		$theme_mod_map = array(
+			'scc_border_px'            => 'border_px',
+			'scc_border_radius'        => 'border_radius',
+			'scc_padding_px'           => 'padding_px',
+			'sccfd_font_size'          => 'fd_font_size',
+			'sccfd_font_weight'        => 'fd_font_weight',
+			'sccfd_padding_top_bottom' => 'fd_padding_top_bottom',
+			'sccfd_padding_left_right' => 'fd_padding_left_right',
+			'sccfd_border'             => 'fd_border',
+			'sccfd_border_radius'      => 'fd_border_radius',
+			'sccfd_margin_bottom'      => 'fd_margin_bottom',
+		);
+
+		foreach ( $theme_mod_map as $old_key => $new_key ) {
+			$value = get_theme_mod( $old_key, null );
+			if ( null !== $value ) {
+				$customizer[ $new_key ] = $value;
+				remove_theme_mod( $old_key );
+			}
+		}
+
+		$option_map = array(
+			'scc_border_color'     => 'border_color',
+			'scc_background'       => 'background',
+			'scc_text_color'       => 'text_color',
+			'scc_link_color'       => 'link_color',
+			'scc_link_hover_color' => 'link_hover_color',
+			'scc_pm_text_color'    => 'pm_text_color',
+			'sccfd_text_color'     => 'fd_text_color',
+			'sccfd_background'     => 'fd_background',
+			'sccfd_border_color'   => 'fd_border_color',
+		);
+
+		foreach ( $option_map as $old_key => $new_key ) {
+			$value = get_option( $old_key, null );
+			if ( null !== $value ) {
+				$customizer[ $new_key ] = $value;
+				delete_option( $old_key );
+			}
+		}
+
+		if ( ! empty( $customizer ) ) {
+			update_option( 'scc_customizer', $customizer );
 		}
 	}
 

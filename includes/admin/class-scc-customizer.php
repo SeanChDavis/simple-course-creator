@@ -6,6 +6,10 @@
  * "Simple Course Creator Design" section, covering the course container,
  * post meta output, and front display indicator.
  *
+ * All settings use type 'option' with array notation (scc_customizer[key])
+ * so values are stored in a single scc_customizer option and persist
+ * across theme switches.
+ *
  * All generated CSS is output in a single <style> block via wp_head.
  *
  * The scc_add_to_styles action fires inside that block so third-party
@@ -35,6 +39,9 @@ class SCC_Customizer {
 	/**
 	 * Register the SCC Customizer section, settings, and controls.
 	 *
+	 * All settings use type 'option' with array notation (scc_customizer[key])
+	 * so all values land in a single DB row independent of the active theme.
+	 *
 	 * Settings are grouped by component with priority spacing:
 	 *   1–20   Course container
 	 *   100    Post meta
@@ -51,52 +58,52 @@ class SCC_Customizer {
 		) );
 
 		// -------------------------------------------------------------------------
-		// Course container — integer settings
+		// Course container and front display — integer settings
 		// -------------------------------------------------------------------------
 
 		$integer_settings = array(
 			array(
-				'slug'     => 'scc_border_px',
+				'slug'     => 'scc_customizer[border_px]',
 				'label'    => __( 'Course Box: Border Width', 'scc' ),
 				'priority' => 1,
 			),
 			array(
-				'slug'     => 'scc_border_radius',
+				'slug'     => 'scc_customizer[border_radius]',
 				'label'    => __( 'Course Box: Border Radius', 'scc' ),
 				'priority' => 2,
 			),
 			array(
-				'slug'     => 'scc_padding_px',
+				'slug'     => 'scc_customizer[padding_px]',
 				'label'    => __( 'Course Box: Padding', 'scc' ),
 				'priority' => 4,
 			),
 			array(
-				'slug'     => 'sccfd_font_size',
+				'slug'     => 'scc_customizer[fd_font_size]',
 				'label'    => __( 'Front Display: Font Size', 'scc' ),
 				'priority' => 201,
 			),
 			array(
-				'slug'     => 'sccfd_padding_top_bottom',
+				'slug'     => 'scc_customizer[fd_padding_top_bottom]',
 				'label'    => __( 'Front Display: Padding (Top / Bottom)', 'scc' ),
 				'priority' => 205,
 			),
 			array(
-				'slug'     => 'sccfd_padding_left_right',
+				'slug'     => 'scc_customizer[fd_padding_left_right]',
 				'label'    => __( 'Front Display: Padding (Left / Right)', 'scc' ),
 				'priority' => 206,
 			),
 			array(
-				'slug'     => 'sccfd_border',
+				'slug'     => 'scc_customizer[fd_border]',
 				'label'    => __( 'Front Display: Border Width', 'scc' ),
 				'priority' => 207,
 			),
 			array(
-				'slug'     => 'sccfd_border_radius',
+				'slug'     => 'scc_customizer[fd_border_radius]',
 				'label'    => __( 'Front Display: Border Radius', 'scc' ),
 				'priority' => 209,
 			),
 			array(
-				'slug'     => 'sccfd_margin_bottom',
+				'slug'     => 'scc_customizer[fd_margin_bottom]',
 				'label'    => __( 'Front Display: Bottom Margin', 'scc' ),
 				'priority' => 210,
 			),
@@ -104,6 +111,7 @@ class SCC_Customizer {
 
 		foreach ( $integer_settings as $setting ) {
 			$wp_customize->add_setting( $setting['slug'], array(
+				'type'              => 'option',
 				'default'           => '',
 				'sanitize_callback' => array( $this, 'sanitize_integer' ),
 			) );
@@ -119,11 +127,12 @@ class SCC_Customizer {
 		// Front display — bold checkbox
 		// -------------------------------------------------------------------------
 
-		$wp_customize->add_setting( 'sccfd_font_weight', array(
+		$wp_customize->add_setting( 'scc_customizer[fd_font_weight]', array(
+			'type'              => 'option',
 			'default'           => 0,
 			'sanitize_callback' => array( $this, 'sanitize_checkbox' ),
 		) );
-		$wp_customize->add_control( 'sccfd_font_weight', array(
+		$wp_customize->add_control( 'scc_customizer[fd_font_weight]', array(
 			'label'    => __( 'Front Display: Bold Font', 'scc' ),
 			'section'  => 'scc_customizer',
 			'type'     => 'checkbox',
@@ -136,47 +145,47 @@ class SCC_Customizer {
 
 		$color_settings = array(
 			array(
-				'slug'     => 'scc_border_color',
+				'slug'     => 'scc_customizer[border_color]',
 				'label'    => __( 'Course Box: Border Color', 'scc' ),
 				'priority' => 3,
 			),
 			array(
-				'slug'     => 'scc_background',
+				'slug'     => 'scc_customizer[background]',
 				'label'    => __( 'Course Box: Background Color', 'scc' ),
 				'priority' => 5,
 			),
 			array(
-				'slug'     => 'scc_text_color',
+				'slug'     => 'scc_customizer[text_color]',
 				'label'    => __( 'Course Box: Text Color', 'scc' ),
 				'priority' => 6,
 			),
 			array(
-				'slug'     => 'scc_link_color',
+				'slug'     => 'scc_customizer[link_color]',
 				'label'    => __( 'Course Box: Link Color', 'scc' ),
 				'priority' => 7,
 			),
 			array(
-				'slug'     => 'scc_link_hover_color',
+				'slug'     => 'scc_customizer[link_hover_color]',
 				'label'    => __( 'Course Box: Link Hover Color', 'scc' ),
 				'priority' => 8,
 			),
 			array(
-				'slug'     => 'scc_pm_text_color',
+				'slug'     => 'scc_customizer[pm_text_color]',
 				'label'    => __( 'Post Meta: Text Color', 'scc' ),
 				'priority' => 100,
 			),
 			array(
-				'slug'     => 'sccfd_text_color',
+				'slug'     => 'scc_customizer[fd_text_color]',
 				'label'    => __( 'Front Display: Text Color', 'scc' ),
 				'priority' => 203,
 			),
 			array(
-				'slug'     => 'sccfd_background',
+				'slug'     => 'scc_customizer[fd_background]',
 				'label'    => __( 'Front Display: Background Color', 'scc' ),
 				'priority' => 204,
 			),
 			array(
-				'slug'     => 'sccfd_border_color',
+				'slug'     => 'scc_customizer[fd_border_color]',
 				'label'    => __( 'Front Display: Border Color', 'scc' ),
 				'priority' => 208,
 			),
@@ -231,31 +240,34 @@ class SCC_Customizer {
 	/**
 	 * Output admin-only inline CSS to narrow the px input fields in the
 	 * Customizer panel and append a "- px" label to each.
+	 *
+	 * Control DOM IDs are derived from the setting ID with [ replaced by -
+	 * and ] stripped, per WordPress Customizer conventions.
 	 */
 	public function customizer_styles() {
 		?>
 		<style type="text/css">
-			#customize-control-scc_border_px input[type="text"],
-			#customize-control-scc_border_radius input[type="text"],
-			#customize-control-scc_padding_px input[type="text"],
-			#customize-control-sccfd_font_size input[type="text"],
-			#customize-control-sccfd_padding_top_bottom input[type="text"],
-			#customize-control-sccfd_padding_left_right input[type="text"],
-			#customize-control-sccfd_border input[type="text"],
-			#customize-control-sccfd_border_radius input[type="text"],
-			#customize-control-sccfd_margin_bottom input[type="text"] { width: 50px; }
+			#customize-control-scc_customizer-border_px input[type="text"],
+			#customize-control-scc_customizer-border_radius input[type="text"],
+			#customize-control-scc_customizer-padding_px input[type="text"],
+			#customize-control-scc_customizer-fd_font_size input[type="text"],
+			#customize-control-scc_customizer-fd_padding_top_bottom input[type="text"],
+			#customize-control-scc_customizer-fd_padding_left_right input[type="text"],
+			#customize-control-scc_customizer-fd_border input[type="text"],
+			#customize-control-scc_customizer-fd_border_radius input[type="text"],
+			#customize-control-scc_customizer-fd_margin_bottom input[type="text"] { width: 50px; }
 
-			#customize-control-scc_border_px label:after,
-			#customize-control-scc_border_radius label:after,
-			#customize-control-scc_padding_px label:after,
-			#customize-control-sccfd_font_size label:after,
-			#customize-control-sccfd_padding_top_bottom label:after,
-			#customize-control-sccfd_padding_left_right label:after,
-			#customize-control-sccfd_border label:after,
-			#customize-control-sccfd_border_radius label:after,
-			#customize-control-sccfd_margin_bottom label:after { content: " - px"; }
+			#customize-control-scc_customizer-border_px label:after,
+			#customize-control-scc_customizer-border_radius label:after,
+			#customize-control-scc_customizer-padding_px label:after,
+			#customize-control-scc_customizer-fd_font_size label:after,
+			#customize-control-scc_customizer-fd_padding_top_bottom label:after,
+			#customize-control-scc_customizer-fd_padding_left_right label:after,
+			#customize-control-scc_customizer-fd_border label:after,
+			#customize-control-scc_customizer-fd_border_radius label:after,
+			#customize-control-scc_customizer-fd_margin_bottom label:after { content: " - px"; }
 
-			#customize-control-sccfd_font_weight { display: inline-block; margin-top: 20px; }
+			#customize-control-scc_customizer-fd_font_weight { display: inline-block; margin-top: 20px; }
 		</style>
 		<?php
 	}
@@ -264,35 +276,39 @@ class SCC_Customizer {
 	/**
 	 * Output all SCC-generated CSS in a single <style> block.
 	 *
-	 * Fires scc_add_to_styles inside the block so third-party code can
-	 * append additional CSS without opening another <style> tag.
+	 * Reads all values from the scc_customizer option array in a single
+	 * get_option() call. Fires scc_add_to_styles inside the block so
+	 * third-party code can append additional CSS without opening another
+	 * <style> tag.
 	 */
 	public function head_styles() {
 
-		// Course container values
-		$border_px        = get_theme_mod( 'scc_border_px', '' );
-		$border_radius    = get_theme_mod( 'scc_border_radius', '' );
-		$border_color     = sanitize_hex_color( get_option( 'scc_border_color', '' ) );
-		$padding_px       = get_theme_mod( 'scc_padding_px', '' );
-		$bg_color         = sanitize_hex_color( get_option( 'scc_background', '' ) );
-		$text_color       = sanitize_hex_color( get_option( 'scc_text_color', '' ) );
-		$link_color       = sanitize_hex_color( get_option( 'scc_link_color', '' ) );
-		$link_hover_color = sanitize_hex_color( get_option( 'scc_link_hover_color', '' ) );
+		$c = get_option( 'scc_customizer', array() );
 
-		// Post meta values
-		$pm_text_color = sanitize_hex_color( get_option( 'scc_pm_text_color', '' ) );
+		// Course container values.
+		$border_px        = $c['border_px'] ?? '';
+		$border_radius    = $c['border_radius'] ?? '';
+		$border_color     = sanitize_hex_color( $c['border_color'] ?? '' );
+		$padding_px       = $c['padding_px'] ?? '';
+		$bg_color         = sanitize_hex_color( $c['background'] ?? '' );
+		$text_color       = sanitize_hex_color( $c['text_color'] ?? '' );
+		$link_color       = sanitize_hex_color( $c['link_color'] ?? '' );
+		$link_hover_color = sanitize_hex_color( $c['link_hover_color'] ?? '' );
 
-		// Front display values
-		$fd_font_size          = get_theme_mod( 'sccfd_font_size', '' );
-		$fd_font_weight        = get_theme_mod( 'sccfd_font_weight', 0 );
-		$fd_text_color         = sanitize_hex_color( get_option( 'sccfd_text_color', '' ) );
-		$fd_bg_color           = sanitize_hex_color( get_option( 'sccfd_background', '' ) );
-		$fd_border             = get_theme_mod( 'sccfd_border', '' );
-		$fd_border_color       = sanitize_hex_color( get_option( 'sccfd_border_color', '' ) );
-		$fd_border_radius      = get_theme_mod( 'sccfd_border_radius', '' );
-		$fd_padding_top_bottom = get_theme_mod( 'sccfd_padding_top_bottom', '' );
-		$fd_padding_left_right = get_theme_mod( 'sccfd_padding_left_right', '' );
-		$fd_margin_bottom      = get_theme_mod( 'sccfd_margin_bottom', '' );
+		// Post meta values.
+		$pm_text_color = sanitize_hex_color( $c['pm_text_color'] ?? '' );
+
+		// Front display values.
+		$fd_font_size          = $c['fd_font_size'] ?? '';
+		$fd_font_weight        = $c['fd_font_weight'] ?? 0;
+		$fd_text_color         = sanitize_hex_color( $c['fd_text_color'] ?? '' );
+		$fd_bg_color           = sanitize_hex_color( $c['fd_background'] ?? '' );
+		$fd_border             = $c['fd_border'] ?? '';
+		$fd_border_color       = sanitize_hex_color( $c['fd_border_color'] ?? '' );
+		$fd_border_radius      = $c['fd_border_radius'] ?? '';
+		$fd_padding_top_bottom = $c['fd_padding_top_bottom'] ?? '';
+		$fd_padding_left_right = $c['fd_padding_left_right'] ?? '';
+		$fd_margin_bottom      = $c['fd_margin_bottom'] ?? '';
 
 		// Only output a style block if there is something to write.
 		$has_course_box_styles = $border_px !== '' || $border_radius !== '' || $border_color || $padding_px !== '' || $bg_color || $text_color || $link_color || $link_hover_color;
@@ -310,36 +326,36 @@ class SCC_Customizer {
 		if ( $has_course_box_styles ) {
 			echo '#scc-wrap{';
 
-			// Border width & style
+			// Border width & style.
 			if ( '0' === (string) $border_px ) {
 				echo 'border:none;';
 			} elseif ( $border_px !== '' ) {
 				echo 'border-width:' . intval( $border_px ) . 'px;border-style:solid;';
 			}
 
-			// Border radius (independent of border)
+			// Border radius (independent of border).
 			if ( $border_radius !== '' ) {
 				echo 'border-radius:' . intval( $border_radius ) . 'px;';
 			}
 
-			// Border color
+			// Border color.
 			if ( $border_color ) {
 				echo 'border-color:' . $border_color . ';';
 			}
 
-			// Padding
+			// Padding.
 			if ( '0' === (string) $padding_px ) {
 				echo 'padding:0;';
 			} elseif ( $padding_px !== '' ) {
 				echo 'padding:' . intval( $padding_px ) . 'px;';
 			}
 
-			// Background
+			// Background.
 			if ( $bg_color ) {
 				echo 'background:' . $bg_color . ';';
 			}
 
-			// Text color
+			// Text color.
 			if ( $text_color ) {
 				echo 'color:' . $text_color . ';';
 			}
@@ -351,7 +367,7 @@ class SCC_Customizer {
 				echo '#scc-wrap .scc-toggle-post-list{right:10px}' . "\n";
 			}
 
-			// Link colors
+			// Link colors.
 			if ( $link_color ) {
 				echo '#scc-wrap a{color:' . $link_color . '}' . "\n";
 			}
