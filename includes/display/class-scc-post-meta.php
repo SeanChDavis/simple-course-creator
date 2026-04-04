@@ -57,12 +57,12 @@ class SCC_Post_Meta {
 
 		if ( $show_author ) {
 			$author_name = get_the_author_meta( 'display_name', (int) get_post_field( 'post_author', $post_id ) );
-			echo '<span class="sccpm-author">' . $written_by . '</span> ' . esc_html( $author_name );
+			echo '<span class="scc-post-meta-author">' . $written_by . '</span> ' . esc_html( $author_name );
 		}
 
 		if ( $show_date ) {
 			if ( $show_author ) {
-				echo ' <span class="sccpm-date">' . $written_on . '</span> ';
+				echo ' <span class="scc-post-meta-date">' . $written_on . '</span> ';
 			}
 			echo esc_html( get_the_date( '', $post_id ) );
 		}
