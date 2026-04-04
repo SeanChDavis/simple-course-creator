@@ -3,7 +3,7 @@
  * Plugin Name: Simple Course Creator
  * Plugin URI: https://scc.crispydiv.com/
  * Description: Organize WordPress posts into courses and display a course listing within each post.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: Sean Davis
  * Author URI: https://crispydiv.com/
  * License: GPL2
@@ -52,7 +52,7 @@ class Simple_Course_Creator {
 	public function __construct() {
 
 		define( 'SCC_NAME',    'Simple Course Creator' );
-		define( 'SCC_VERSION', '2.0.0' );
+		define( 'SCC_VERSION', '2.1.0' );
 		define( 'SCC_DIR',     trailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'SCC_URL',     trailingslashit( plugin_dir_url( __FILE__ ) ) );
 
@@ -81,6 +81,10 @@ class Simple_Course_Creator {
 
 		if ( version_compare( $stored_version, '2.0.0', '<' ) ) {
 			$this->migrate_v2();
+		}
+
+		if ( version_compare( $stored_version, '2.1.0', '<' ) ) {
+			$this->migrate_v2_1();
 		}
 
 		update_option( 'scc_db_version', SCC_VERSION );
@@ -121,6 +125,35 @@ class Simple_Course_Creator {
 		}
 
 		update_option( 'course_display_settings', $settings );
+	}
+
+
+	/**
+	 * Migrations for v2.1.0.
+	 *
+	 * - Renames course_display_settings → scc_display_settings
+	 * - Renames taxonomy_{term_id}      → scc_term_{term_id}
+	 */
+	private function migrate_v2_1(): void {
+
+		// Migrate course_display_settings → scc_display_settings.
+		$settings = get_option( 'course_display_settings', null );
+		if ( null !== $settings ) {
+			update_option( 'scc_display_settings', $settings );
+			delete_option( 'course_display_settings' );
+		}
+
+		// Migrate taxonomy_{term_id} → scc_term_{term_id}.
+		$terms = get_terms( array( 'taxonomy' => 'course', 'hide_empty' => false ) );
+		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$meta = get_option( 'taxonomy_' . $term->term_id, null );
+				if ( null !== $meta ) {
+					update_option( 'scc_term_' . $term->term_id, $meta );
+					delete_option( 'taxonomy_' . $term->term_id );
+				}
+			}
+		}
 	}
 
 

@@ -46,8 +46,8 @@ class SCC_Settings_Page {
 	public function register_settings(): void {
 
 		register_setting(
-			'course_display_settings',
-			'course_display_settings',
+			'scc_display_settings',
+			'scc_display_settings',
 			array( $this, 'save_settings' )
 		);
 
@@ -211,7 +211,7 @@ class SCC_Settings_Page {
 			'hide'  => __( 'Hide', 'scc' ),
 		);
 		?>
-		<select id="display_position" name="course_display_settings[display_position]">
+		<select id="display_position" name="scc_display_settings[display_position]">
 			<?php foreach ( $choices as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['display_position'], $value ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -236,7 +236,7 @@ class SCC_Settings_Page {
 			'none'      => __( 'No List Indicator', 'scc' ),
 		);
 		?>
-		<select id="list_type" name="course_display_settings[list_type]">
+		<select id="list_type" name="scc_display_settings[list_type]">
 			<?php foreach ( $choices as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['list_type'], $value ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -264,7 +264,7 @@ class SCC_Settings_Page {
 			'comment_count' => __( 'Comment Count', 'scc' ),
 		);
 		?>
-		<select id="scc_orderby" name="course_display_settings[scc_orderby]">
+		<select id="scc_orderby" name="scc_display_settings[scc_orderby]">
 			<?php foreach ( $choices as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['scc_orderby'], $value ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -288,7 +288,7 @@ class SCC_Settings_Page {
 			'desc' => __( 'Descending', 'scc' ),
 		);
 		?>
-		<select id="scc_order" name="course_display_settings[scc_order]">
+		<select id="scc_order" name="scc_display_settings[scc_order]">
 			<?php foreach ( $choices as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['scc_order'], $value ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -314,7 +314,7 @@ class SCC_Settings_Page {
 			'strike' => __( 'Strikethrough', 'scc' ),
 		);
 		?>
-		<select id="current_post" name="course_display_settings[current_post]">
+		<select id="current_post" name="scc_display_settings[current_post]">
 			<?php foreach ( $choices as $value => $label ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $options['current_post'], $value ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -333,7 +333,7 @@ class SCC_Settings_Page {
 
 		$options = $this->get_options();
 		?>
-		<input id="disable_js" type="checkbox" name="course_display_settings[disable_js]" value="1" <?php checked( 1, $options['disable_js'] ); ?>>
+		<input id="disable_js" type="checkbox" name="scc_display_settings[disable_js]" value="1" <?php checked( 1, $options['disable_js'] ); ?>>
 		<label for="disable_js"><?php esc_html_e( 'Display the course listing without a toggle link.', 'scc' ); ?></label>
 		<?php
 	}
@@ -350,7 +350,7 @@ class SCC_Settings_Page {
 
 		$options = $this->get_options();
 		?>
-		<input id="show_author" type="checkbox" name="course_display_settings[show_author]" value="1" <?php checked( 1, $options['show_author'] ); ?>>
+		<input id="show_author" type="checkbox" name="scc_display_settings[show_author]" value="1" <?php checked( 1, $options['show_author'] ); ?>>
 		<label for="show_author"><?php esc_html_e( 'Show the post author beneath each item in the course listing.', 'scc' ); ?></label>
 		<?php
 	}
@@ -363,7 +363,7 @@ class SCC_Settings_Page {
 
 		$options = $this->get_options();
 		?>
-		<input id="show_date" type="checkbox" name="course_display_settings[show_date]" value="1" <?php checked( 1, $options['show_date'] ); ?>>
+		<input id="show_date" type="checkbox" name="scc_display_settings[show_date]" value="1" <?php checked( 1, $options['show_date'] ); ?>>
 		<label for="show_date"><?php esc_html_e( 'Show the publish date beneath each item in the course listing.', 'scc' ); ?></label>
 		<?php
 	}
@@ -380,7 +380,7 @@ class SCC_Settings_Page {
 
 		$options = $this->get_options();
 		?>
-		<input id="enable_front_display" type="checkbox" name="course_display_settings[enable_front_display]" value="1" <?php checked( 1, $options['enable_front_display'] ); ?>>
+		<input id="enable_front_display" type="checkbox" name="scc_display_settings[enable_front_display]" value="1" <?php checked( 1, $options['enable_front_display'] ); ?>>
 		<label for="enable_front_display"><?php esc_html_e( 'Show a course label in post excerpts on the blog home, archives, and search results.', 'scc' ); ?></label>
 		<?php
 	}
@@ -449,7 +449,7 @@ class SCC_Settings_Page {
 			<h1><?php echo esc_html( SCC_NAME . ' ' . __( 'Settings', 'scc' ) ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
-				settings_fields( 'course_display_settings' );
+				settings_fields( 'scc_display_settings' );
 				do_settings_sections( 'simple_course_creator' );
 				submit_button();
 				?>
@@ -482,7 +482,7 @@ class SCC_Settings_Page {
 			'enable_front_display' => '1',
 		);
 
-		return wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
+		return wp_parse_args( get_option( 'scc_display_settings', array() ), $defaults );
 	}
 
 

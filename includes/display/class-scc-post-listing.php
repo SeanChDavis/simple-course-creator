@@ -201,7 +201,7 @@ class SCC_Post_Listing {
 			'disable_js'       => '0',
 		);
 
-		return wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
+		return wp_parse_args( get_option( 'scc_display_settings', array() ), $defaults );
 	}
 }
 

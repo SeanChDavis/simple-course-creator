@@ -4,7 +4,7 @@ Tags: course, series, lesson, taxonomy, posts
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.7
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,10 @@ Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. 
 6. Course listing expanded
 
 == Changelog ==
+
+= 2.1.0 =
+* Changed: All plugin option keys now prefixed with `scc_` (`course_display_settings` → `scc_display_settings`, `taxonomy_{id}` → `scc_term_{id}`)
+* Added: Upgrade routine to migrate existing option data to new key names
 
 = 2.0.0 =
 * Consolidated: SCC Customizer, SCC Front Display, and SCC Post Meta are now built into this plugin

@@ -86,7 +86,7 @@ class SCC_Custom_Taxonomy {
 		if ( $query->is_archive && ! is_admin() ) {
 			$queried_object = get_queried_object();
 			if ( $queried_object && isset( $queried_object->taxonomy ) && 'course' === $queried_object->taxonomy ) {
-				$options = get_option( 'course_display_settings', array() );
+				$options = get_option( 'scc_display_settings', array() );
 				$query->set( 'posts_per_page', -1 );
 				$query->set( 'orderby', $options['scc_orderby'] ?? 'date' );
 				$query->set( 'order',   $options['scc_order']   ?? 'asc' );
@@ -182,7 +182,7 @@ class SCC_Custom_Taxonomy {
 	 */
 	public function edit_course_meta_title( $term ) {
 
-		$term_meta = get_option( 'taxonomy_' . $term->term_id, array() );
+		$term_meta = get_option( 'scc_term_' . $term->term_id, array() );
 		$value     = ! empty( $term_meta['post_list_title'] ) ? $term_meta['post_list_title'] : '';
 		?>
 		<tr class="form-field">
@@ -222,13 +222,13 @@ class SCC_Custom_Taxonomy {
 			return;
 		}
 
-		$term_meta = get_option( 'taxonomy_' . $term_id, array() );
+		$term_meta = get_option( 'scc_term_' . $term_id, array() );
 
 		foreach ( $_POST['term_meta'] as $key => $value ) {
 			$term_meta[ sanitize_key( $key ) ] = sanitize_text_field( $value );
 		}
 
-		update_option( 'taxonomy_' . $term_id, $term_meta );
+		update_option( 'scc_term_' . $term_id, $term_meta );
 	}
 
 

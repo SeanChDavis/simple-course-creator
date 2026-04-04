@@ -38,7 +38,7 @@ $defaults = array(
 	'current_post' => 'none',
 	'disable_js'   => '0',
 );
-$options = wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
+$options = wp_parse_args( get_option( 'scc_display_settings', array() ), $defaults );
 
 $post_ids = get_posts( array(
 	'post_type'      => 'post',
@@ -60,7 +60,7 @@ if ( ! is_single() || count( $post_ids ) <= 1 ) {
 	return;
 }
 
-$term_meta       = get_option( 'taxonomy_' . $course->term_id, array() );
+$term_meta       = get_option( 'scc_term_' . $course->term_id, array() );
 $post_list_title = ! empty( $term_meta['post_list_title'] ) ? $term_meta['post_list_title'] : $course->name;
 $course_desc     = term_description( $course->term_id, 'course' );
 $course_toggle   = apply_filters( 'course_toggle', __( 'full course', 'scc' ) );

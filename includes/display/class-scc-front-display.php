@@ -82,7 +82,7 @@ class SCC_Front_Display {
 	 */
 	private function is_enabled(): bool {
 
-		$options = get_option( 'course_display_settings', array() );
+		$options = get_option( 'scc_display_settings', array() );
 
 		// Default to enabled when the key is absent (fresh install or pre-v2 upgrade).
 		if ( ! isset( $options['enable_front_display'] ) ) {

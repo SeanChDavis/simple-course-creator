@@ -94,7 +94,7 @@ class SCC_Post_Meta {
 			'show_date'   => '1',
 		);
 
-		return wp_parse_args( get_option( 'course_display_settings', array() ), $defaults );
+		return wp_parse_args( get_option( 'scc_display_settings', array() ), $defaults );
 	}
 }
 
