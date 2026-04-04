@@ -29,6 +29,8 @@ As of v2.0.0, Simple Course Creator is a single plugin with no add-ons required.
 
 If you were using the separate SCC Customizer, SCC Post Meta, or SCC Front Display plugins, deactivate and delete them after upgrading. Your existing settings carry over automatically.
 
+If you delete the plugin, all of its data is removed from the database automatically — settings, Customizer values, course terms, and term meta. Your posts are not affected.
+
 ---
 
 ## How It Works
