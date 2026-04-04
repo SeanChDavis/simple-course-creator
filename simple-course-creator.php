@@ -59,6 +59,8 @@ class Simple_Course_Creator {
 		add_action( 'plugins_loaded',        array( $this, 'upgrade_check' ), 1 );
 		add_action( 'init',                  array( $this, 'load_textdomain' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
+		add_action( 'admin_init',            array( $this, 'deactivate_retired_addons' ) );
+		add_action( 'admin_notices',         array( $this, 'retired_addons_notice' ) );
 
 		$this->includes();
 	}
@@ -240,6 +242,72 @@ class Simple_Course_Creator {
 		if ( ! empty( $customizer ) ) {
 			update_option( 'scc_customizer', $customizer );
 		}
+	}
+
+
+	/**
+	 * Deactivate retired add-on plugins if any are still active.
+	 *
+	 * The three formerly separate add-ons are now built into SCC 2.0.0.
+	 * If any are still active after upgrading, deactivate them automatically
+	 * and surface a one-time admin notice.
+	 */
+	public function deactivate_retired_addons(): void {
+
+		if ( ! function_exists( 'deactivate_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$retired = array(
+			'simple-course-creator-customizer/simple-course-creator-customizer.php'       => 'SCC Customizer',
+			'simple-course-creator-front-display/simple-course-creator-front-display.php' => 'SCC Front Display',
+			'simple-course-creator-post-meta/simple-course-creator-post-meta.php'         => 'SCC Post Meta',
+		);
+
+		$deactivated = array();
+
+		foreach ( $retired as $plugin => $name ) {
+			if ( is_plugin_active( $plugin ) ) {
+				deactivate_plugins( $plugin );
+				$deactivated[] = $name;
+			}
+		}
+
+		if ( ! empty( $deactivated ) ) {
+			set_transient( 'scc_retired_addons_deactivated', $deactivated, 5 * MINUTE_IN_SECONDS );
+		}
+	}
+
+
+	/**
+	 * Show a one-time admin notice when retired add-ons were auto-deactivated.
+	 */
+	public function retired_addons_notice(): void {
+
+		$deactivated = get_transient( 'scc_retired_addons_deactivated' );
+
+		if ( empty( $deactivated ) ) {
+			return;
+		}
+
+		delete_transient( 'scc_retired_addons_deactivated' );
+
+		$names   = implode( ', ', array_map( 'esc_html', $deactivated ) );
+		$pronoun = count( $deactivated ) === 1 ? __( 'Its', 'scc' ) : __( 'Their', 'scc' );
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: plugin name(s), 2: Its / Their */
+					esc_html__( 'Simple Course Creator automatically deactivated %1$s. %2$s functionality is now built in — no settings were lost.', 'scc' ),
+					'<strong>' . $names . '</strong>',
+					esc_html( $pronoun )
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 

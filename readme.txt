@@ -108,6 +108,7 @@ Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. 
 * Added: Front Display toggle on the settings page
 * Added: Unified Customizer section — all settings stored in a single scc_customizer option, independent of the active theme
 * Added: Upgrade routine to migrate all settings from the former add-on plugins
+* Added: Auto-deactivation of retired add-on plugins (SCC Customizer, SCC Front Display, SCC Post Meta) with admin notice on first admin load after upgrade
 * Changed: All plugin option keys prefixed with scc_ (course_display_settings → scc_display_settings, taxonomy_{id} → scc_term_{id})
 * Fixed: Customizer integer settings were stored as theme_mods — now stored as options so they persist across theme switches
 * Fixed: Missing nonce verification and input sanitization on term meta save
