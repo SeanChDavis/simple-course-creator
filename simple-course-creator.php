@@ -98,6 +98,7 @@ class Simple_Course_Creator {
 	 * - display_date   (1 = hide) → show_date   (1 = show)
 	 * - Adds enable_front_display = '1' (on by default for existing installs)
 	 * - Removes the now-unused display_author and display_date keys
+	 * - Removes the now-unused scc_orderby and scc_order standalone options
 	 */
 	private function migrate_v2(): void {
 
@@ -125,6 +126,10 @@ class Simple_Course_Creator {
 		}
 
 		update_option( 'course_display_settings', $settings );
+
+		// Remove standalone options superseded by course_display_settings.
+		delete_option( 'scc_orderby' );
+		delete_option( 'scc_order' );
 	}
 
 
