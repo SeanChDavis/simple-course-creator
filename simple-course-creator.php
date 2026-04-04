@@ -142,17 +142,43 @@ class Simple_Course_Creator {
 
 		// -------------------------------------------------------------------------
 		// Term meta: taxonomy_{term_id} options → wp_termmeta
+		//
+		// Cannot use get_terms() here — the course taxonomy is not registered
+		// until init, which fires after plugins_loaded. Query wp_options and
+		// wp_term_taxonomy directly instead.
 		// -------------------------------------------------------------------------
 
-		$terms = get_terms( array( 'taxonomy' => 'course', 'hide_empty' => false ) );
-		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-			foreach ( $terms as $term ) {
-				$meta = get_option( 'taxonomy_' . $term->term_id, null );
-				if ( null !== $meta && ! empty( $meta['post_list_title'] ) ) {
-					update_term_meta( $term->term_id, 'scc_post_list_title', $meta['post_list_title'] );
-				}
-				delete_option( 'taxonomy_' . $term->term_id );
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			"SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'taxonomy_%'",
+			ARRAY_A
+		);
+
+		foreach ( $rows as $row ) {
+			$term_id = (int) str_replace( 'taxonomy_', '', $row['option_name'] );
+
+			if ( $term_id <= 0 ) {
+				continue;
 			}
+
+			// Only migrate options that belong to a course taxonomy term.
+			$is_course_term = (bool) $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->term_taxonomy} WHERE term_id = %d AND taxonomy = 'course'",
+				$term_id
+			) );
+
+			if ( ! $is_course_term ) {
+				continue;
+			}
+
+			$meta = maybe_unserialize( $row['option_value'] );
+
+			if ( is_array( $meta ) && ! empty( $meta['post_list_title'] ) ) {
+				update_term_meta( $term_id, 'scc_post_list_title', $meta['post_list_title'] );
+			}
+
+			delete_option( $row['option_name'] );
 		}
 
 		// -------------------------------------------------------------------------
