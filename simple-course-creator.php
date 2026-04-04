@@ -95,7 +95,8 @@ class Simple_Course_Creator {
 	 * - display_date   (1 = hide) → show_date   (1 = show)
 	 * - Adds enable_front_display = '1' (on by default for existing installs)
 	 * - Renames course_display_settings → scc_display_settings
-	 * - Removes standalone scc_orderby and scc_order options
+	 * - Removes standalone scc_orderby, scc_order, display_position,
+	 *   list_type, current_post, and disable_js options
 	 *
 	 * Term meta:
 	 * - Migrates taxonomy_{term_id} options → scc_post_list_title in wp_termmeta
@@ -139,6 +140,10 @@ class Simple_Course_Creator {
 		// Remove standalone options superseded by scc_display_settings.
 		delete_option( 'scc_orderby' );
 		delete_option( 'scc_order' );
+		delete_option( 'display_position' );
+		delete_option( 'list_type' );
+		delete_option( 'current_post' );
+		delete_option( 'disable_js' );
 
 		// -------------------------------------------------------------------------
 		// Term meta: taxonomy_{term_id} options → wp_termmeta
