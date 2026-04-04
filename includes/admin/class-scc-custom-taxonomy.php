@@ -182,8 +182,7 @@ class SCC_Custom_Taxonomy {
 	 */
 	public function edit_course_meta_title( $term ) {
 
-		$term_meta = get_option( 'scc_term_' . $term->term_id, array() );
-		$value     = ! empty( $term_meta['post_list_title'] ) ? $term_meta['post_list_title'] : '';
+		$value = get_term_meta( $term->term_id, 'scc_post_list_title', true );
 		?>
 		<tr class="form-field">
 			<th scope="row">
@@ -222,13 +221,9 @@ class SCC_Custom_Taxonomy {
 			return;
 		}
 
-		$term_meta = get_option( 'scc_term_' . $term_id, array() );
-
-		foreach ( $_POST['term_meta'] as $key => $value ) {
-			$term_meta[ sanitize_key( $key ) ] = sanitize_text_field( $value );
+		if ( isset( $_POST['term_meta']['post_list_title'] ) ) {
+			update_term_meta( $term_id, 'scc_post_list_title', sanitize_text_field( $_POST['term_meta']['post_list_title'] ) );
 		}
-
-		update_option( 'scc_term_' . $term_id, $term_meta );
 	}
 
 

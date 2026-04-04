@@ -98,7 +98,7 @@ class Simple_Course_Creator {
 	 * - Removes standalone scc_orderby and scc_order options
 	 *
 	 * Term meta:
-	 * - Renames taxonomy_{term_id} → scc_term_{term_id}
+	 * - Migrates taxonomy_{term_id} options → scc_post_list_title in wp_termmeta
 	 *
 	 * Customizer:
 	 * - Consolidates individual scc_* and sccfd_* options and theme_mods
@@ -141,17 +141,17 @@ class Simple_Course_Creator {
 		delete_option( 'scc_order' );
 
 		// -------------------------------------------------------------------------
-		// Term meta: taxonomy_{term_id} → scc_term_{term_id}
+		// Term meta: taxonomy_{term_id} options → wp_termmeta
 		// -------------------------------------------------------------------------
 
 		$terms = get_terms( array( 'taxonomy' => 'course', 'hide_empty' => false ) );
 		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$meta = get_option( 'taxonomy_' . $term->term_id, null );
-				if ( null !== $meta ) {
-					update_option( 'scc_term_' . $term->term_id, $meta );
-					delete_option( 'taxonomy_' . $term->term_id );
+				if ( null !== $meta && ! empty( $meta['post_list_title'] ) ) {
+					update_term_meta( $term->term_id, 'scc_post_list_title', $meta['post_list_title'] );
 				}
+				delete_option( 'taxonomy_' . $term->term_id );
 			}
 		}
 

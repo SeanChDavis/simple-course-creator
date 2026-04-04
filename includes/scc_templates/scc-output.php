@@ -60,8 +60,7 @@ if ( ! is_single() || count( $post_ids ) <= 1 ) {
 	return;
 }
 
-$term_meta       = get_option( 'scc_term_' . $course->term_id, array() );
-$post_list_title = ! empty( $term_meta['post_list_title'] ) ? $term_meta['post_list_title'] : $course->name;
+$post_list_title = get_term_meta( $course->term_id, 'scc_post_list_title', true ) ?: $course->name;
 $course_desc     = term_description( $course->term_id, 'course' );
 $course_toggle   = apply_filters( 'course_toggle', __( 'full course', 'scc' ) );
 $list_tag        = 'ordered' === $options['list_type'] ? 'ol' : 'ul';
