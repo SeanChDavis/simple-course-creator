@@ -1,267 +1,413 @@
+# Copyright (C) 2026 Sean Davis
+# This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Simple Course Creator\n"
-"POT-Creation-Date: 2016-06-25 23:24-0800\n"
-"PO-Revision-Date: 2016-06-25 23:25-0800\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
+"Project-Id-Version: Simple Course Creator 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/simple-course-creator\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.1\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
-"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SearchPath-0: .\n"
+"POT-Creation-Date: 2026-04-06T16:31:34+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: scc\n"
 
-#: includes/admin/class-scc-custom-taxonomy.php:57
-msgctxt "scc"
-msgid "Courses"
+#. Plugin Name of the plugin
+#: simple-course-creator.php
+#: includes/admin/class-scc-customizer.php:57
+msgid "Simple Course Creator"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: simple-course-creator.php
+msgid "https://scc.crispydiv.com/"
+msgstr ""
+
+#. Description of the plugin
+#: simple-course-creator.php
+msgid "Organize WordPress posts into courses and display a course listing within each post."
+msgstr ""
+
+#. Author of the plugin
+#: simple-course-creator.php
+msgid "Sean Davis"
+msgstr ""
+
+#. Author URI of the plugin
+#: simple-course-creator.php
+msgid "https://crispydiv.com/"
 msgstr ""
 
 #: includes/admin/class-scc-custom-taxonomy.php:58
-msgctxt "scc"
-msgid "Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:59
-msgid "Search Courses"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:60
-msgid "All Courses"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:61
-msgid "Parent Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:62
-msgid "Parent Course:"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:63
-msgid "Edit Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:64
-msgid "Update Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:65
-msgid "Add New Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:66
-msgid "New Course Name"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:67
+msgctxt "taxonomy general name"
 msgid "Courses"
 msgstr ""
 
-#: includes/admin/class-scc-custom-taxonomy.php:68
-msgid "Popular Courses"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:140
-msgid "Select Course"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:164
-#: includes/admin/class-scc-custom-taxonomy.php:189
-msgid "Post Listing Title"
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:166
-#: includes/admin/class-scc-custom-taxonomy.php:193
-msgid "This is the displayed title of your post listing container."
-msgstr ""
-
-#: includes/admin/class-scc-custom-taxonomy.php:232
+#: includes/admin/class-scc-custom-taxonomy.php:59
+msgctxt "taxonomy singular name"
 msgid "Course"
 msgstr ""
 
-#: includes/admin/class-scc-custom-taxonomy.php:256
+#: includes/admin/class-scc-custom-taxonomy.php:60
+msgid "Search Courses"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:61
+msgid "All Courses"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:62
+msgid "Parent Course"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:63
+msgid "Parent Course:"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:64
+msgid "Edit Course"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:65
+msgid "Update Course"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:66
+msgid "Add New Course"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:67
+msgid "New Course Name"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:68
+msgid "Courses"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:69
+msgid "Popular Courses"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:127
+#: includes/admin/class-scc-custom-taxonomy.php:146
+msgid "Post Listing Title"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:129
+#: includes/admin/class-scc-custom-taxonomy.php:151
+msgid "This is the displayed title of your post listing container."
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:204
+#: includes/admin/class-scc-custom-taxonomy.php:210
+msgid "Course"
+msgstr ""
+
+#: includes/admin/class-scc-custom-taxonomy.php:235
 msgid "no course selected"
 msgstr ""
 
-#: includes/admin/class-scc-custom-taxonomy.php:277
+#: includes/admin/class-scc-custom-taxonomy.php:270
 msgid "Show all courses"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:34
+#: includes/admin/class-scc-customizer.php:58
+msgid "Customize the appearance of SCC course listings and indicators. Untouched options inherit your theme's default styles. For complete control, write custom CSS targeting the relevant classes or override the plugin's template files in your theme."
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:67
+msgid "Course Box"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:68
+msgid "Style the course listing container — borders, colors, padding, and spacing."
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:76
+#: includes/admin/class-scc-customizer.php:204
+msgid "Border Width"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:81
+#: includes/admin/class-scc-customizer.php:209
+msgid "Border Radius"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:86
+msgid "Padding"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:91
+#: includes/admin/class-scc-customizer.php:214
+msgid "Bottom Margin"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:113
+#: includes/admin/class-scc-customizer.php:258
+msgid "Border Color"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:118
+#: includes/admin/class-scc-customizer.php:253
+msgid "Background Color"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:123
+#: includes/admin/class-scc-customizer.php:169
+#: includes/admin/class-scc-customizer.php:248
+msgid "Text Color"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:128
+msgid "Link Color"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:133
+msgid "Link Hover Color"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:157
+#: includes/admin/class-scc-settings-page.php:125
+msgid "Post Meta"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:158
+msgid "Style the author and date shown beneath each item in the course listing."
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:180
+#: includes/admin/class-scc-settings-page.php:154
+msgid "Front Display"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:181
+msgid "Style the course indicator shown on the blog home, archives, and search results."
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:189
+msgid "Font Size"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:194
+msgid "Padding (Top / Bottom)"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:199
+msgid "Padding (Left / Right)"
+msgstr ""
+
+#: includes/admin/class-scc-customizer.php:239
+msgid "Bold Font"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:35
 msgid "Course Settings"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:47
-msgid "Course Container Display Settings"
+#: includes/admin/class-scc-settings-page.php:60
+msgid "Course Container Display"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:50
-msgid "Course Container Position"
+#: includes/admin/class-scc-settings-page.php:67
+msgid "Container Position"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:53
-msgid "HTML List Style"
+#: includes/admin/class-scc-settings-page.php:76
+msgid "List Style"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:56
-msgid "Order Posts By"
+#: includes/admin/class-scc-settings-page.php:85
+msgid "Sort Posts By"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:59
+#: includes/admin/class-scc-settings-page.php:94
+msgid "Sort Order"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:103
 msgid "Current Post Style"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:62
+#: includes/admin/class-scc-settings-page.php:112
 msgid "Disable JavaScript"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:72
-msgid ""
-"These settings control the front-end display of the post listing container "
-"inside of posts that are part of courses."
+#: includes/admin/class-scc-settings-page.php:132
+msgid "Show Author"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:90
-msgid "Above Content"
+#: includes/admin/class-scc-settings-page.php:141
+msgid "Show Date"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:91
-msgid "Below Content"
+#: includes/admin/class-scc-settings-page.php:161
+msgid "Enable Front Display"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:92
-msgid "Above & Below Content"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:93
-msgid "Hide Course Container"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:101
-msgid "Choose where to display your course container."
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:120
-msgid "Numbered List"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:121
-msgid "Bullet Points"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:122
-msgid "No List Indicator"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:130
-msgid "Choose your preferred list element style."
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:149
-msgid "Date"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:150
-msgid "Author"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:151
-msgid "Title"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:152
-msgid "Last Modified"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:153
-msgid "Random"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:154
-msgid "Comment Count"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:162
-msgid "Choose how to order to order your post listing."
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:182
-msgid "No Style"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:183
-msgid "Bold"
-msgstr ""
-
-#: includes/admin/class-scc-settings-page.php:184
-msgid "Strike"
+#: includes/admin/class-scc-settings-page.php:178
+msgid "Control the position, style, and ordering of the course post listing inside single posts."
 msgstr ""
 
 #: includes/admin/class-scc-settings-page.php:185
-msgid "Italic"
+msgid "Show or hide author and date information beneath each post in the course listing."
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:193
-msgid "Choose your preferred current post text/font style."
+#: includes/admin/class-scc-settings-page.php:192
+msgid "On the blog home, archives, and search results, indicate that posts belong to a course."
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:212
-msgid ""
-"Check this box to disable JavaScript (the course list will show by default)."
+#: includes/admin/class-scc-settings-page.php:208
+msgid "Above Content"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:270
-msgid " Settings"
+#: includes/admin/class-scc-settings-page.php:209
+msgid "Below Content"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:273
-msgid "Display"
+#: includes/admin/class-scc-settings-page.php:210
+msgid "Above & Below Content"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:211
+msgid "Hide"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:221
+msgid "Where to display the course container relative to post content."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:234
+msgid "Numbered List"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:235
+msgid "Bullet Points"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:236
+msgid "No List Indicator"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:246
+msgid "Choose your preferred list element style."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:259
+msgid "Date"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:260
+msgid "Author"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:261
+msgid "Title"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:262
+msgid "Last Modified"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:263
+msgid "Random"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:264
+msgid "Comment Count"
 msgstr ""
 
 #: includes/admin/class-scc-settings-page.php:274
-msgid "Information"
+msgid "The parameter used to order posts in the course listing."
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:284
-msgid " Information"
+#: includes/admin/class-scc-settings-page.php:287
+msgid "Ascending"
 msgstr ""
 
 #: includes/admin/class-scc-settings-page.php:288
-msgid "Plugin Resources"
+msgid "Descending"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:292
-#, php-format
-msgid ""
-"New courses are created under the Posts menu. Once a course is created, "
-"posts can be assigned to a course through the manage posts and edit post "
-"screens. To add content to the post listing output, see the hooks & filters "
-"documentation %1$s. To completely override the output, CSS, and JS files, "
-"see the override plugin files documentation %2$s."
+#: includes/admin/class-scc-settings-page.php:298
+msgid "Whether the post listing is sorted ascending or descending."
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:301
-msgid "Plugin Contributors"
+#: includes/admin/class-scc-settings-page.php:311
+msgid "No Style"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:306
-#, php-format
-msgid ""
-"Fork %s on GitHub and submit a pull request if you would like to pitch in."
+#: includes/admin/class-scc-settings-page.php:312
+msgid "Bold"
 msgstr ""
 
-#: includes/admin/class-scc-settings-page.php:333
-#, php-format
-msgid "View %s"
+#: includes/admin/class-scc-settings-page.php:313
+msgid "Italic"
 msgstr ""
 
-#: includes/scc_templates/scc-output.php:29
+#: includes/admin/class-scc-settings-page.php:314
+msgid "Strikethrough"
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:324
+msgid "How the currently viewed post is styled in the course listing."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:337
+msgid "Display the course listing without a toggle link."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:354
+msgid "Show the post author beneath each item in the course listing."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:367
+msgid "Show the publish date beneath each item in the course listing."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:384
+msgid "Show a course label in post excerpts on the blog home, archives, and search results."
+msgstr ""
+
+#: includes/admin/class-scc-settings-page.php:449
+msgid "Settings"
+msgstr ""
+
+#: includes/display/class-scc-front-display.php:68
+msgid "This post is part of the"
+msgstr ""
+
+#: includes/display/class-scc-front-display.php:69
+msgid "courses."
+msgstr ""
+
+#: includes/display/class-scc-front-display.php:69
+msgid "course."
+msgstr ""
+
+#: includes/display/class-scc-post-meta.php:53
+msgid "written by"
+msgstr ""
+
+#: includes/display/class-scc-post-meta.php:54
+msgid "on"
+msgstr ""
+
+#: includes/scc_templates/scc-output.php:99
 msgid "full course"
+msgstr ""
+
+#: simple-course-creator.php:296
+msgid "Its"
+msgstr ""
+
+#: simple-course-creator.php:296
+msgid "Their"
+msgstr ""
+
+#. translators: 1: plugin name(s), 2: Its / Their
+#: simple-course-creator.php:303
+#, php-format
+msgid "Simple Course Creator automatically deactivated %1$s. %2$s functionality is now built in — no settings were lost."
 msgstr ""
