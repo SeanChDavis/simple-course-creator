@@ -6,6 +6,10 @@
  * the Post Listing Title meta field on add/edit term screens, a Course
  * column on the manage posts screen, and a course filter dropdown.
  *
+ * The post types the taxonomy is registered on are filterable via
+ * apply_filters( 'scc_post_types', array( 'post' ) ). Column hooks
+ * and the filter dropdown are registered dynamically for each post type.
+ *
  * @since 1.0.0
  */
 
@@ -23,6 +27,7 @@ class SCC_Custom_Taxonomy {
 	public function __construct() {
 
 		add_action( 'init', array( $this, 'register_taxonomy_course' ) );
+		add_action( 'init', array( $this, 'register_column_hooks' ) );
 		add_action( 'pre_get_posts', array( $this, 'course_archive' ) );
 
 		add_action( 'course_add_form_fields',  array( $this, 'course_meta_title' ), 10, 2 );
@@ -31,9 +36,6 @@ class SCC_Custom_Taxonomy {
 		add_action( 'create_course',  array( $this, 'save_course_meta_title' ), 10, 2 );
 		add_action( 'edited_course',  array( $this, 'save_course_meta_title' ), 10, 2 );
 
-		add_filter( 'manage_edit-post_columns',    array( $this, 'columns' ) );
-		add_action( 'manage_post_posts_custom_column', array( $this, 'custom_columns' ) );
-
 		add_action( 'restrict_manage_posts', array( $this, 'course_posts' ) );
 	}
 
@@ -41,10 +43,14 @@ class SCC_Custom_Taxonomy {
 	/**
 	 * Register the 'course' taxonomy.
 	 *
-	 * Non-hierarchical, applied to posts only. REST API enabled.
-	 * A custom metabox callback is stubbed but not yet active — the
-	 * default tag-style checkbox UI is used until a select-only UI
-	 * is built to enforce single-course assignment.
+	 * The post types it applies to are filterable:
+	 *
+	 *   add_filter( 'scc_post_types', function( $types ) {
+	 *       $types[] = 'my_custom_post_type';
+	 *       return $types;
+	 *   } );
+	 *
+	 * Non-hierarchical. REST API enabled.
 	 */
 	public function register_taxonomy_course() {
 
@@ -72,7 +78,23 @@ class SCC_Custom_Taxonomy {
 			'show_in_rest' => true,
 		);
 
-		register_taxonomy( 'course', array( 'post' ), $args );
+		register_taxonomy( 'course', apply_filters( 'scc_post_types', array( 'post' ) ), $args );
+	}
+
+
+	/**
+	 * Register the Course column and filter hooks for each supported post type.
+	 *
+	 * Fires on init so the scc_post_types filter value is available.
+	 */
+	public function register_column_hooks() {
+
+		$post_types = apply_filters( 'scc_post_types', array( 'post' ) );
+
+		foreach ( $post_types as $post_type ) {
+			add_filter( "manage_edit-{$post_type}_columns",        array( $this, 'columns' ) );
+			add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'custom_columns' ) );
+		}
 	}
 
 
@@ -92,71 +114,6 @@ class SCC_Custom_Taxonomy {
 				$query->set( 'order',   $options['scc_order']   ?? 'asc' );
 			}
 		}
-	}
-
-
-	/**
-	 * Return the first course term assigned to a post.
-	 *
-	 * @param  int            $post_id
-	 * @return WP_Term|false  The course term, or false if none assigned.
-	 */
-	public function retrieve_course( $post_id ) {
-
-		$course = wp_get_post_terms( $post_id, 'course' );
-
-		if ( ! is_wp_error( $course ) && ! empty( $course ) && is_array( $course ) ) {
-			return current( $course );
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Return the term ID of the first course assigned to a post.
-	 *
-	 * @param  int $post_id
-	 * @return int Term ID, or 0 if none assigned.
-	 */
-	public function retrieve_course_id( $post_id ) {
-
-		$course = $this->retrieve_course( $post_id );
-
-		return $course ? $course->term_id : 0;
-	}
-
-
-	/**
-	 * Custom metabox for assigning a single course from the edit post screen.
-	 *
-	 * Not currently active — registered taxonomy uses default UI.
-	 * TODO: activate once a select-only UI is built to enforce single-course
-	 * assignment per post.
-	 *
-	 * @param WP_Post $post The current post object.
-	 */
-	public function course_meta_box( $post ) {
-
-		$current_course = $this->retrieve_course_id( $post->ID );
-		$tax            = get_taxonomy( 'course' );
-		$courses        = get_terms( 'course', array( 'hide_empty' => false, 'orderby' => 'name' ) );
-		?>
-		<div id="taxonomy-<?php echo esc_attr( lcfirst( $tax->labels->name ) ); ?>" class="categorydiv">
-			<label class="screen-reader-text">
-				<?php echo esc_html( $tax->labels->parent_item_colon ); ?>
-			</label>
-			<select name="tax_input[course]" style="width:100%">
-				<option value="0"><?php esc_html_e( 'Select Course', 'scc' ); ?></option>
-				<?php foreach ( $courses as $course ) : ?>
-					<option value="<?php echo esc_attr( $course->slug ); ?>" <?php selected( $current_course, $course->term_id ); ?>>
-						<?php echo esc_html( $course->name ); ?>
-					</option>
-				<?php endforeach; ?>
-			</select>
-		</div>
-		<?php
-		do_action( 'scc_meta_box_add', $post->ID );
 	}
 
 
@@ -248,12 +205,19 @@ class SCC_Custom_Taxonomy {
 			}
 		}
 
+		// Fallback: if no categories column, append at the end.
+		if ( ! isset( $new_columns['course'] ) ) {
+			$new_columns['course'] = __( 'Course', 'scc' );
+		}
+
 		return $new_columns;
 	}
 
 
 	/**
-	 * Output the course value for each post row in the Course column.
+	 * Output the course value(s) for each post row in the Course column.
+	 *
+	 * If a post belongs to multiple courses, all are shown as comma-separated links.
 	 *
 	 * @param string $column The current column slug.
 	 */
@@ -265,24 +229,33 @@ class SCC_Custom_Taxonomy {
 			return;
 		}
 
-		$current_course = $this->retrieve_course( $post->ID );
+		$courses = wp_get_post_terms( $post->ID, 'course' );
 
-		if ( $current_course ) {
-			echo '<a href="' . esc_url( admin_url( 'edit.php?course=' . $current_course->slug ) ) . '">' . esc_html( $current_course->name ) . '</a>';
-		} else {
+		if ( is_wp_error( $courses ) || empty( $courses ) ) {
 			esc_html_e( 'no course selected', 'scc' );
+			return;
 		}
+
+		$links = array();
+
+		foreach ( $courses as $course ) {
+			$links[] = '<a href="' . esc_url( admin_url( 'edit.php?course=' . $course->slug ) ) . '">' . esc_html( $course->name ) . '</a>';
+		}
+
+		echo implode( ', ', $links ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- URLs and names already escaped above
 	}
 
 
 	/**
 	 * Output a course filter dropdown on the manage posts screen.
+	 *
+	 * @param string $post_type The current post type slug.
 	 */
-	public function course_posts() {
+	public function course_posts( $post_type ) {
 
-		global $typenow;
+		$allowed_post_types = apply_filters( 'scc_post_types', array( 'post' ) );
 
-		if ( 'post' !== $typenow ) {
+		if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
 			return;
 		}
 

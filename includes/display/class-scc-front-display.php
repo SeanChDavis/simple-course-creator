@@ -62,8 +62,11 @@ class SCC_Front_Display {
 			return $content;
 		}
 
+		$courses       = get_the_terms( $post_id, 'course' );
+		$course_count  = ( ! is_wp_error( $courses ) && ! empty( $courses ) ) ? count( $courses ) : 1;
+
 		$leading_text  = esc_html( apply_filters( 'course_leading_text',  __( 'This post is part of the', 'scc' ) ) );
-		$trailing_text = esc_html( apply_filters( 'course_trailing_text', __( 'course.', 'scc' ) ) );
+		$trailing_text = esc_html( apply_filters( 'course_trailing_text', $course_count > 1 ? __( 'courses.', 'scc' ) : __( 'course.', 'scc' ) ) );
 
 		$course_info = get_the_term_list( $post_id, 'course', $leading_text . ' ', ', ', ' ' . $trailing_text );
 

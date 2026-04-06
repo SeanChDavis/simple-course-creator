@@ -4,7 +4,7 @@ Tags: course, series, lesson, taxonomy, posts
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.7
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,7 +54,7 @@ If you were using the separate SCC Customizer, SCC Front Display, or SCC Post Me
 
 = Can a post be assigned to more than one course? =
 
-No. A post should only be assigned to one course. The purpose of the plugin is to display all other posts in the same course as the one being viewed, so a single course assignment is required for that to work correctly.
+Yes. If a post belongs to multiple courses, a separate course listing is displayed for each one. The position setting (above, below, both) applies to all listings.
 
 = Can I customize the course listing output? =
 
@@ -85,7 +85,7 @@ The post meta label text is filterable via `written_by` and `written_on`.
 
 **Customizer** — Use the Simple Course Creator Design section in Appearance > Customize to adjust colors, borders, padding, and typography for all three output components.
 
-**Custom CSS** — Write CSS in your theme targeting `#scc-wrap`, `.scc-post-meta`, and `.scc-front-display`.
+**Custom CSS** — Write CSS in your theme targeting `.scc-post-list`, `.scc-post-meta`, and `.scc-front-display`. Each listing has a `data-course-id` attribute if you need to target a specific course box (`[data-course-id="5"]`). When a post belongs to multiple courses, each listing also carries the `scc-multiple-courses` class and all listings are wrapped in a `.scc-course-group` container.
 
 = Can I add my own styles to the Customizer output? =
 
@@ -93,14 +93,34 @@ Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. 
 
 == Screenshots ==
 
-1. Settings page with display options
-2. Create a course just like categories and tags
-3. Assign a post to a course from the edit post screen
-4. Filter posts by course on the manage posts screen
-5. Course listing collapsed
-6. Course listing expanded
+1. Settings page with display, post meta, and front display options
+2. Create and manage courses from Posts > Courses
+3. Assign a post to a course from the block editor sidebar
+4. Filter and manage posts by course from the manage posts screen
+5. Customize the course box, post meta, and front display styles in the Customizer
+6. Course listing collapsed
+7. Course listing expanded with author and date post meta
 
 == Changelog ==
+
+= 2.1.0 =
+* Added: Multiple course support — a post can now belong to more than one course; a separate listing is rendered for each
+* Added: `scc_post_types` filter — register the course taxonomy on custom post types without touching the plugin
+* Added: `scc-single-course` class on course boxes that belong to a single-course post; `scc-multiple-courses` class on boxes that belong to a multi-course post
+* Added: `.scc-course-group` wrapper around all listings when a post belongs to more than one course
+* Added: Customizer "Bottom Margin" control for the course box; applies to both standalone boxes and the group wrapper
+* Changed: Customizer reorganized into a panel with three sections — Course Box, Post Meta, and Front Display
+* Changed: Course listing container changed from `#scc-wrap` to `.scc-post-list` (breaking change — update any custom CSS targeting `#scc-wrap`)
+* Changed: Each listing carries a `data-course-id="{term_id}"` attribute for targeting individual courses with CSS (`[data-course-id="5"]`)
+* Changed: `scc.css` restructured as a self-documenting reference — every selector the plugin outputs is listed with plain-language comments
+* Fixed: Duplicate element ID when `display_position` was set to "both" — IDs are not used on the container element
+* Fixed: Front display sentence grammar — "course." vs. "courses." now matches the actual count
+* Fixed: JS toggle addClass/removeClass was targeting all toggle links on the page instead of only the clicked one
+* Fixed: `is_single()` replaced with `is_singular()` throughout so the plugin works correctly on custom post type singular views
+* Fixed: Toggle element changed from `<a href="#">` to `<button type="button">` for correct semantics and accessibility; CSS reset in `scc.css` neutralizes theme button styles
+* Fixed: `return false` in toggle JS replaced with `e.preventDefault()` — avoids unintended `stopPropagation()` side effect
+* Changed: Toggle button now displays a chevron indicator (▾) that rotates when the list is open; style or remove via `.scc-toggle-post-list::after`
+* Changed: `scc-output.php` and `scc-post-listing.js` fully documented — hook reference, template variables, inline comments explaining each conditional block
 
 = 2.0.0 =
 * Consolidated: SCC Customizer, SCC Front Display, and SCC Post Meta are now built into this plugin

@@ -30,43 +30,45 @@ class SCC_Post_Listing {
 
 
 	/**
-	 * Return the first course term assigned to a post.
+	 * Return all course terms assigned to a post.
 	 *
-	 * @param  int            $post_id
-	 * @return WP_Term|false
+	 * @param  int   $post_id
+	 * @return WP_Term[]  Array of course terms, empty array if none assigned.
 	 */
-	public function retrieve_course( $post_id ) {
+	public function retrieve_courses( $post_id ) {
 
-		$course = wp_get_post_terms( $post_id, 'course' );
+		$courses = wp_get_post_terms( $post_id, 'course' );
 
-		if ( ! is_wp_error( $course ) && ! empty( $course ) && is_array( $course ) ) {
-			return current( $course );
+		if ( is_wp_error( $courses ) || empty( $courses ) ) {
+			return array();
 		}
 
-		return false;
+		return $courses;
 	}
 
 
 	/**
 	 * Inject the course post listing into single post content.
 	 *
+	 * If a post belongs to multiple courses, a separate listing is rendered
+	 * for each one, wrapped in a shared .scc-course-group container.
 	 * Position is controlled by the display_position setting:
 	 * above (default), below, both, or hide.
 	 *
 	 * @param  string $content The post content.
-	 * @return string          Content with course listing injected.
+	 * @return string          Content with course listing(s) injected.
 	 */
 	public function post_listing( $content ) {
 
 		global $post;
 
-		if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
+		if ( ! is_singular() || ! in_the_loop() || ! is_main_query() ) {
 			return $content;
 		}
 
-		$course = $this->retrieve_course( $post->ID );
+		$courses = $this->retrieve_courses( $post->ID );
 
-		if ( ! $course ) {
+		if ( empty( $courses ) ) {
 			return $content;
 		}
 
@@ -81,9 +83,21 @@ class SCC_Post_Listing {
 			wp_enqueue_script( 'scc-post-list-js' );
 		}
 
-		ob_start();
-		$this->get_template( 'scc-output.php', array( 'course' => $course ) );
-		$post_listing = ob_get_clean();
+		$is_multi     = count( $courses ) > 1;
+		$post_listing = '';
+
+		foreach ( $courses as $course ) {
+			ob_start();
+			$this->get_template( 'scc-output.php', array(
+				'course'         => $course,
+				'is_multi_course' => $is_multi,
+			) );
+			$post_listing .= ob_get_clean();
+		}
+
+		if ( $is_multi ) {
+			$post_listing = '<div class="scc-course-group">' . $post_listing . '</div>';
+		}
 
 		switch ( $position ) {
 			case 'below':
@@ -103,11 +117,13 @@ class SCC_Post_Listing {
 	 * plugin's own templates directory.
 	 *
 	 * @param string $template_name Filename of the template (e.g. 'scc-output.php').
-	 * @param array  $args          Variables to expose to the template. Accepts 'course'.
+	 * @param array  $args          Variables to expose to the template.
+	 *                              Accepts 'course' (WP_Term) and 'is_multi_course' (bool).
 	 */
 	public function get_template( $template_name, $args = array() ) {
 
-		$course = isset( $args['course'] ) ? $args['course'] : null;
+		$course          = isset( $args['course'] )          ? $args['course']          : null;
+		$is_multi_course = isset( $args['is_multi_course'] ) ? $args['is_multi_course'] : false;
 
 		include $this->locate_template( $template_name, $course ? $course->slug : '' );
 	}
@@ -144,13 +160,13 @@ class SCC_Post_Listing {
 	 * Register and enqueue front-end styles and scripts.
 	 *
 	 * Checks child theme, then parent theme, then falls back to the
-	 * plugin's own files. Assets are only enqueued on single post pages.
+	 * plugin's own files. Assets are only enqueued on singular post pages.
 	 *
 	 * @credits Stylesheet hierarchy approach inspired by Easy Digital Downloads.
 	 */
 	public function frontend_styles() {
 
-		if ( ! is_single() ) {
+		if ( ! is_singular() ) {
 			return;
 		}
 

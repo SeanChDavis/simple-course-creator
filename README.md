@@ -11,6 +11,7 @@ Organize WordPress posts into courses and display a course listing within each p
 
 - [What's Included](#whats-included)
 - [How It Works](#how-it-works)
+- [Multiple Courses](#multiple-courses)
 - [Settings](#settings)
 - [Post Meta](#post-meta)
 - [Front Display](#front-display)
@@ -18,6 +19,7 @@ Organize WordPress posts into courses and display a course listing within each p
   - [Customizer](#customizer)
   - [Hooks & Filters](#hooks--filters)
   - [Template File Overrides](#template-file-overrides)
+  - [Custom Post Type Support](#custom-post-type-support)
 - [Bugs and Contributions](#bugs-and-contributions)
 - [License](#license)
 
@@ -46,12 +48,20 @@ Courses can also be created or selected while editing a post, just like adding a
 ![Edit Post — Create or Select Course](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-3-Post-Edit-w-Course-scaled.png)
 ![All Posts — Filter by Course](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-all-posts.jpg)
 
-Once a post is assigned to a course, a course listing appears in the post content — as long as it isn't the only post in that course. The listing shows the course title, the course description, and a toggle link. Clicking the link expands the listing to reveal all posts in the course. All posts are linked except the current one.
+Once a post is assigned to a course, a course listing appears in the post content — as long as it isn't the only post in that course. The listing shows the course title, the course description, and a toggle button. Clicking the button expands the listing to reveal all posts in the course. All posts are linked except the current one.
 
 ![Course Listing — Collapsed](https://scc.crispydiv.com/wp-content/uploads/2026/03/Screenshot-5-Included-Post-Course-Collapsed-scaled.png)
 ![Course Listing — Expanded](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-post-listing-expanded.jpg)
 
 Styles are minimal. Theme styles are inherited as much as possible.
+
+---
+
+## Multiple Courses
+
+A post can belong to more than one course. When it does, a separate course listing is rendered for each assigned course. All listings are wrapped in a `.scc-course-group` container, and each listing carries the `scc-multiple-courses` class. Posts that belong to only one course carry the `scc-single-course` class instead.
+
+The front display indicator on archive pages handles multiple courses naturally — "This post is part of the Course A, Course B courses."
 
 ---
 
@@ -119,15 +129,17 @@ add_filter( 'course_trailing_text', function( $text ) {
 } );
 ```
 
+The trailing text defaults to `"course."` for one course and `"courses."` for more than one. A custom filter value is used regardless of count.
+
 ---
 
 ## Theme Overrides
 
 ### Customizer
 
-The **Simple Course Creator Design** section in **Appearance > Customize** lets you adjust colors, borders, padding, and font sizes for all three output components — the course listing box, post meta, and front display — without writing CSS.
+**Appearance > Customize > Simple Course Creator** provides a panel with three sections — Course Box, Post Meta, and Front Display — for adjusting colors, borders, padding, font sizes, and spacing without writing CSS.
 
-![Customizer — SCC Design Section](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-customizer.jpg)
+![Customizer — SCC Design Panel](https://scc.crispydiv.com/wp-content/uploads/2026/04/scc-customizer.jpg)
 
 The `scc_add_to_styles` action fires inside the generated `<style>` block if you need to append additional CSS without opening a separate style tag.
 
@@ -137,18 +149,18 @@ Add actions in your theme's `functions.php` to insert content at specific points
 
 | Hook | Notes |
 |---|---|
-| `scc_before_container` | Before the `#scc-wrap` div |
-| `scc_container_top` | After the opening `#scc-wrap` div |
+| `scc_before_container` | Before the `.scc-post-list` div |
+| `scc_container_top` | After the opening `.scc-post-list` div |
 | `scc_below_title` | After the course title |
 | `scc_below_description` | After the course description |
-| `scc_before_toggle` | Before the toggle link text |
-| `scc_after_toggle` | After the toggle link text |
+| `scc_before_toggle` | Before the toggle button text |
+| `scc_after_toggle` | After the toggle button text |
 | `scc_above_list` | Before the list opening tag |
 | `scc_before_list_item` | Before each list item — receives `$post_id` |
 | `scc_after_list_item` | After each list item — receives `$post_id` |
 | `scc_below_list` | After the list closing tag |
-| `scc_container_bottom` | Before the closing `#scc-wrap` div |
-| `scc_after_container` | After the `#scc-wrap` div |
+| `scc_container_bottom` | Before the closing `.scc-post-list` div |
+| `scc_after_container` | After the closing `.scc-post-list` div |
 
 Example:
 
@@ -170,17 +182,66 @@ add_action( 'scc_before_list_item', function( $post_id ) {
 
 | Filter | Default | Notes |
 |---|---|---|
-| `course_toggle` | `"full course"` | Toggle link text |
+| `course_toggle` | `"full course"` | Toggle button label |
 | `course_leading_text` | `"This post is part of the"` | Front display leading text |
-| `course_trailing_text` | `"course."` | Front display trailing text |
+| `course_trailing_text` | `"course."` / `"courses."` | Front display trailing text; defaults match singular/plural count |
 | `written_by` | `"written by"` | Post meta author label |
 | `written_on` | `"on"` | Post meta date label |
+| `scc_post_types` | `array( 'post' )` | Post types registered to the course taxonomy — see [Custom Post Type Support](#custom-post-type-support) |
+
+**CSS selectors:**
+
+See `includes/scc_templates/scc.css` for a full annotated reference of every selector the plugin outputs, with comments describing each one and the conditions under which it appears.
+
+Key selectors:
+
+| Selector | Notes |
+|---|---|
+| `.scc-post-list` | Course listing container — always present |
+| `.scc-single-course` | Added when post belongs to one course |
+| `.scc-multiple-courses` | Added when post belongs to more than one course |
+| `.scc-course-group` | Wraps all listings on a multi-course post |
+| `[data-course-id="N"]` | Targets a specific course box by term ID |
+| `.scc-post-list-title` | Course title heading |
+| `.scc-course-description` | Course description wrapper |
+| `.scc-toggle-post-list` | Toggle button |
+| `.scc-toggle-post-list.scc-opened` | Toggle button when list is expanded |
+| `.scc-post-container` | Post list wrapper (hidden by default) |
+| `.scc-show-posts` | Post list wrapper when JS is disabled (always visible) |
+| `.scc-post-item` | Each `<li>` in the listing |
+| `.scc-list-item` | Span wrapping each link or current-post span |
+| `.scc-current-post` | Span on the currently viewed post (no link) |
+| `.scc-post-meta` | Author/date output beneath each item |
+| `.scc-front-display` | Front display indicator on archives/home/search |
 
 ### Template File Overrides
 
 To override the course listing template, create a directory called `scc_templates` in the root of your active theme and copy any files from the plugin's `includes/scc_templates/` directory into it. Theme files take priority over plugin files.
 
 Copy the files — don't create empty ones. An empty file still overrides.
+
+The template file (`scc-output.php`) is fully documented — every hook, filter, template variable, and conditional block is explained inline.
+
+### Custom Post Type Support
+
+By default the course taxonomy is registered on `post` only. To add support for a custom post type, filter `scc_post_types`:
+
+```php
+add_filter( 'scc_post_types', function( $types ) {
+    $types[] = 'lesson';
+    return $types;
+} );
+```
+
+This registers the taxonomy on the CPT, adds the Course column to its admin list table, and includes CPT posts in course listings.
+
+---
+
+## Upgrading from v2.0.x
+
+**v2.1.0 contains one breaking CSS change.**
+
+The course listing container changed from `#scc-wrap` to `.scc-post-list`. If you have custom CSS targeting `#scc-wrap`, update it to `.scc-post-list`. Each listing also carries a `data-course-id="{term_id}"` attribute for targeting a specific course box.
 
 ---
 
