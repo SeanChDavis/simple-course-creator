@@ -105,13 +105,15 @@
    Not present when "Disable JavaScript" is enabled in Settings > Course
    Settings. In that case .scc-show-posts is used instead (see Post Container).
 
-   Note: Themes commonly apply broad button resets. The specificity of
-   .scc-post-list .scc-toggle-post-list (two classes) overrides most bare
-   button {} rules. If your theme uses higher-specificity button selectors
-   and the toggle looks wrong, add one CSS override targeting this selector.
+   Note: Broad theme button selectors (e.g. button:not(...)) can reach
+   specificity (0,2,1), which beats a plain two-class selector. Anchoring
+   on the always-present .scc-single-course / .scc-multiple-courses companion
+   classes brings these rules to (0,3,0) and reliably wins that race without
+   resorting to !important or inline styles.
    ============================================================================= */
 
-.scc-post-list .scc-toggle-post-list {
+.scc-post-list.scc-single-course .scc-toggle-post-list,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list {
 	/* Reset browser and theme button styles. */
 	appearance: none;
 	-webkit-appearance: none;
@@ -135,14 +137,30 @@
 	text-transform: uppercase;
 }
 
+/* State resets — keeps hover/focus/active theme button styles from leaking in.
+   Specificity (0,4,0) beats theme selectors with a pseudo-class at (0,3,1). */
+.scc-post-list.scc-single-course .scc-toggle-post-list:hover,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list:hover,
+.scc-post-list.scc-single-course .scc-toggle-post-list:focus,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list:focus,
+.scc-post-list.scc-single-course .scc-toggle-post-list:active,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list:active {
+	background: none;
+	border: none;
+	color: inherit;
+	box-shadow: none;
+}
+
 /* Chevron indicator — rotates when the list is open. */
-.scc-post-list .scc-toggle-post-list::after {
+.scc-post-list.scc-single-course .scc-toggle-post-list::after,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list::after {
 	content: ' ▾';
 	display: inline-block;
 	transition: transform 0.2s ease;
 }
 
-.scc-post-list .scc-toggle-post-list.scc-opened::after {
+.scc-post-list.scc-single-course .scc-toggle-post-list.scc-opened::after,
+.scc-post-list.scc-multiple-courses .scc-toggle-post-list.scc-opened::after {
 	transform: rotate(180deg);
 }
 
