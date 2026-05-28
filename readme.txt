@@ -3,8 +3,8 @@ Contributors: sdavis2702
 Tags: course, series, lesson, taxonomy, posts
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.7
-Stable tag: 2.1.0
+Tested up to: 7.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,6 +102,10 @@ Yes. The `scc_add_to_styles` action fires inside the generated `<style>` block. 
 7. Course listing expanded with author and date post meta
 
 == Changelog ==
+
+= 2.1.1 =
+* Fixed: Toggle button CSS specificity increased to prevent broad theme button selectors from overriding the subtle reset styles on base and interaction states
+* Tested: Confirmed compatible with WordPress 7.0
 
 = 2.1.0 =
 * Added: Multiple course support — a post can now belong to more than one course; a separate listing is rendered for each

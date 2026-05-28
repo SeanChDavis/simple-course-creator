@@ -3,13 +3,13 @@
  * Plugin Name: Simple Course Creator
  * Plugin URI: https://scc.crispydiv.com/
  * Description: Organize WordPress posts into courses and display a course listing within each post.
- * Version: 2.1.0
+ * Version: 2.1.1
  * Author: Sean Davis
  * Author URI: https://crispydiv.com/
  * License: GPL2
  * Requires at least: 5.0
  * Requires PHP: 7.4
- * Tested up to: 6.7
+ * Tested up to: 7.0
  * Text Domain: scc
  * Domain Path: /languages/
  *
@@ -52,7 +52,7 @@ class Simple_Course_Creator {
 	public function __construct() {
 
 		define( 'SCC_NAME',    'Simple Course Creator' );
-		define( 'SCC_VERSION', '2.1.0' );
+		define( 'SCC_VERSION', '2.1.1' );
 		define( 'SCC_DIR',     trailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'SCC_URL',     trailingslashit( plugin_dir_url( __FILE__ ) ) );
 
